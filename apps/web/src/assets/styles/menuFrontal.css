@@ -1,0 +1,390 @@
+:root {
+    --blanco: #ffffff;
+    --negro: #212121;
+    --claro: #7adbf1;
+    --medio: #2e5b9b;
+    --oscuro: #10106a;
+    --grisnoticias: #e4e3e3;
+    --fondo: #DBE4F2;
+    --verde: #E5FFDD;
+    --celeste: #D7FCFF;
+    --rojo: #f7ecc7;
+
+    --sombra:
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+main {
+    flex: 1;
+    padding: 1rem;
+}
+
+.contenedor-principal {
+    margin: 3rem;
+    position: relative;
+    height: 65rem;
+}
+
+.pestaña {
+    position: absolute;
+    background-color: #adadad;
+    width: 100%;
+    max-width: 15rem;
+    height: 5rem;
+    font-size: 1rem;
+    border-radius: 1rem 1rem 0 0;
+    align-items: center;
+    text-align: center;
+    padding: .5rem;
+    cursor: pointer;
+
+}
+
+.pestaña-diario {
+    top: -5rem;
+    left: 14rem;
+}
+
+.pestaña-mensual {
+    top: -5rem;
+    left: 30rem;
+}
+
+.pestaña:hover {
+    background-color: var(--oscuro);
+    color: var(--blanco);
+}
+
+/*-------------------- GRID Y CONTENEDORES---------------------*/
+
+.grid {
+    background-color: var(--grisnoticias);
+    width: 100%;
+    max-width: 160rem;
+    height: 60rem;
+    margin: 5rem auto;
+    padding: 1rem;
+    align-items: center;
+    border-radius: 1rem;
+    box-shadow: var(--sombra);
+    display: none;
+}
+
+.grid.activa.mensual {
+    display: block;
+}
+
+.grid.activa.diario {
+    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+        "menu nutricional llevamos"
+        "menu capacidad tips";
+    gap: 1rem;
+}
+
+.pestaña.activa {
+    background-color: var(--grisnoticias);
+    color: var(--negro);
+}
+
+.contenedor {
+    background-color: var(--blanco);
+    border-radius: 1rem;
+    padding: 0 2rem;
+    margin: 0;
+    box-shadow: var(--sombra);
+}
+
+
+.menu,
+.nutricional,
+.capacidad,
+.llevamos,
+.tips {
+    width: 100%;
+}
+
+.menu {
+    height: 50rem;
+    max-width: 35rem;
+    justify-self: center;
+    text-align: center;
+}
+
+.nutricional {
+    height: 25rem;
+    max-width: 70rem;
+    margin-top: 5rem;
+}
+
+.capacidad {
+    height: 20rem;
+    max-width: 40rem;
+    justify-self: center;
+    margin-bottom: 5rem;
+}
+
+.llevamos {
+    height: 30rem;
+    max-width: 35rem;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3rem;
+}
+
+.tips {
+    height: 20rem;
+    max-width: 25rem;
+    justify-self: center;
+    margin-bottom: 3rem;
+}
+
+/* Encapsula tabla nutricional del Dashboard para que no la rompan estilos del admin */
+.dash-nutri-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.dash-nutri-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    /* evita que se “estire” por contenido */
+}
+
+.dash-nutri-table th,
+.dash-nutri-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash-nutri-empty {
+    text-align: center;
+    opacity: 0.7;
+    padding: 14px 12px;
+}
+
+/*-------------------- ELEMENTOS DE LOS CONTENEDORES---------------------*/
+
+.titulos {
+    text-align: left;
+}
+
+h2 {
+    text-align: center;
+    margin: 1rem;
+}
+
+.comida,
+.ensalada,
+.postre,
+.titulos {
+    margin-top: 2.5rem;
+}
+
+.comida,
+.ensalada,
+.postre {
+    width: 100%;
+    max-width: 30rem;
+    height: 6rem;
+    padding: .3rem;
+    border-radius: 1rem;
+    box-shadow: var(--sombra);
+}
+
+.comida {
+    background-color: var(--verde);
+}
+
+.ensalada {
+    background-color: var(--celeste);
+}
+
+.postre {
+    background-color: var(--rojo);
+}
+
+.posit {
+    background-color: var(--rojo);
+    width: 100%;
+    max-width: 20rem;
+    height: 20rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    align-items: center;
+
+    margin: 3rem auto;
+    text-align: center;
+    box-shadow: var(--sombra);
+}
+
+.posit h2 {
+    font-size: 6rem;
+    margin: 3rem;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.cuadradoTips {
+    background-color: var(--verde);
+    width: 100%;
+    max-width: 20rem;
+    height: 13rem;
+    border-radius: 1rem;
+    padding: 16px;
+    /* mejor padding real */
+    margin: auto;
+    text-align: center;
+    box-shadow: var(--sombra);
+
+    display: flex;
+    /* clave */
+    align-items: flex-start;
+    /* texto siempre arriba */
+    justify-content: center;
+    /* centrado horizontal */
+}
+
+.cuadradoTips p {
+    margin: 0;
+    width: 100%;
+    line-height: 1.5;
+    font-weight: 400;
+    /* normal */
+    text-align: center;
+    color: #2e3a2f;
+    /* verde oscuro suave (más pro) */
+}
+
+.footerunidadtic {
+    display: flex;
+    background-color: var(--oscuro);
+    color: var(--blanco);
+    align-items: center;
+    margin: 0;
+}
+
+.unidadtic {
+    text-align: center;
+    flex: 1;
+    font-size: 1.5rem;
+    margin-left: 32rem;
+}
+
+.login {
+    justify-content: right;
+    text-align: right;
+    text-decoration: none;
+    margin: 1rem;
+}
+
+
+/*-------------------- BARRA DE CAPACIDAD ---------------------*/
+#aforo {
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+#aforo .wrap {
+    position: relative;
+    height: 16px;
+    background: #e6e6e6;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+#aforo .bar {
+    height: 100%;
+    width: 0;
+    transition: width .35s ease;
+}
+
+#aforo .bar.ok {
+    background: #4caf50;
+}
+
+/* < 80% */
+#aforo .bar.warn {
+    background: #ff9800;
+}
+
+/* 80 - 99% */
+#aforo .bar.full {
+    background: #f44336;
+}
+
+/* 100%+ */
+#aforo .txt {
+    margin-top: 6px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Pista */
+#aforo .wrap {
+    background: #eee;
+    height: 16px;
+    border-radius: 999px;
+    overflow: hidden;
+    /* para que el fill respete el borde redondeado */
+}
+
+/* Relleno base */
+#aforo .bar {
+    height: 100%;
+    width: 0;
+    /* el JS lo actualizará */
+    background: #4caf50;
+    /* color por defecto si no hay clases */
+    border-radius: inherit;
+    transition: width .6s ease;
+}
+
+/* Colores según % (tu JS ya añade estas clases) */
+#aforo .bar.ok {
+    background: #4caf50;
+}
+
+/* <70% */
+#aforo .bar.warn {
+    background: #ff9800;
+}
+
+/* 70–95% */
+#aforo .bar.full {
+    background: #f44336;
+}
+
+/* >=95% */
+
+#aforo .wrap {
+    width: 100%;
+    height: 14px;
+    background: #eee;
+    border-radius: 14px;
+    overflow: hidden
+}
+
+#aforo .bar {
+    height: 100%;
+    width: 0;
+    transition: width .35s ease;
+    background: #5bbb4b;
+    border-radius: 14px
+}
+
+#aforo .txt {
+    margin-top: 6px;
+    font-weight: 600
+}

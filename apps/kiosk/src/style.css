@@ -1,0 +1,17 @@
+/* ===== Global: no scroll, full screen ===== */
+html,
+body,
+#app {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    /* 🔥 sin scroll */
+}
+
+/* Opcional: suaviza tipografía */
+* {
+    box-sizing: border-box;
+}

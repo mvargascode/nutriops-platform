@@ -1,0 +1,251 @@
+/* =========================
+   Semana — Menú semanal (Admin)
+   Estilo alineado a Data (dataImport.css)
+   ========================= */
+
+/* Contenedor principal (idéntico a .data-card) */
+.semana-card {
+    width: min(1500px, 100%);
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 0 22px 15px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    height: 68rem;
+}
+
+/* Título centrado (idéntico a Data) */
+.semana-title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.semana-title h2 {
+    font-size: 30px;
+    font-weight: 800;
+    margin-top: 1.2rem;
+}
+
+/* Controls (equivalente a .data-controls) */
+.semana-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.semana-controls .left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.semana-controls .right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.meta {
+    opacity: 0.75;
+}
+
+/* Botón “Actualizar” (similar a Cancel pero con look “neutral”) */
+.btn-refresh {
+    margin-top: 8px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 2px solid #111;
+    background: #ffffff;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.btn-refresh:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
+.btn-refresh:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Mensajes (idéntico a Data) */
+.msg {
+    margin-top: 12px;
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.msg.warn {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+.msg.err {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.msg.ok {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+}
+
+.muted {
+    margin-top: 10px;
+    opacity: 0.7;
+}
+
+/* Preview (igual a Data) */
+.semana-preview {
+    margin-top: 16px;
+}
+
+.preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Wrapper estilo table-wrap: borde + radios + scroll interno */
+.semana-wrap {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: auto;
+    max-height: 583px;
+    background: #fff;
+    padding: 12px;
+}
+
+/* Día (pero con estética coherente a Data) */
+.semana-day {
+    background: rgba(245, 245, 245, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.semana-day:last-child {
+    margin-bottom: 0;
+}
+
+.semana-day__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.semana-day__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.semana-day__label {
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.semana-day__date {
+    color: #6b6b6b;
+    font-size: 13px;
+}
+
+.semana-badge {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.semana-day--today {
+    border-color: rgba(20, 120, 60, 0.35);
+    background: rgba(220, 245, 230, 0.55);
+}
+
+/* Grid 3 columnas */
+.semana-day__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 12px 14px 14px 14px;
+}
+
+.semana-meal {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.semana-meal__title {
+    margin: 0 0 8px 0;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.semana-line {
+    color: #444;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.menu-week-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.menu-week-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.menu-week-left h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: #1f1f1f;
+}
+
+.week-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.week-days {
+    opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+    .semana-day__grid {
+        grid-template-columns: 1fr;
+    }
+}

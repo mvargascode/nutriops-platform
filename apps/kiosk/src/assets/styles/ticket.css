@@ -1,0 +1,45 @@
+@page {
+    size: 80mm auto;
+    margin: 6mm;
+}
+
+.ticket {
+    width: 68mm;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+}
+
+.title {
+    text-align: center;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+.sub {
+    text-align: center;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.hr {
+    border-top: 1px dashed #000;
+    margin: 10px 0;
+}
+
+.row {
+    font-size: 12px;
+    margin: 4px 0;
+}
+
+.big {
+    text-align: center;
+    font-weight: 900;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.thanks {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 6px;
+}

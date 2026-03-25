@@ -1,0 +1,543 @@
+/* =========================
+   Variables (idénticas al HTML original)
+========================= */
+:root {
+    --blanco: #ffffff;
+    --negro: #212121;
+    --claro: #7adbf1;
+    --medio: #2e5b9b;
+    --oscuro: #10106a;
+    --grisnoticias: #d6d6d6;
+    --fondo: #DBE4F2;
+    --verde: #E5FFDD;
+    --celeste: #D7FCFF;
+    --rojo: #f7ecc7;
+    --sombra: 0 1px 3px rgba(0, 0, 0, .12), 0 4px 6px rgba(0, 0, 0, .08);
+
+    --header-h: 10rem;
+    /* coincide con topbar */
+    --footer-h: 4rem;
+
+    --sidebar-w: 25rem;
+    /* ancho normal */
+    --sidebar-w-colapsada: 10rem;
+    /* ancho colapsado */
+}
+
+/* =========================
+   Reset / base tipográfica
+========================= */
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    color: var(--negro);
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.page-admin {
+    height: 100vh;
+    /* ✅ antes: min-height */
+    overflow: hidden;
+    /* ✅ bloquea scroll del viewport */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--grisnoticias);
+    background-image: none;
+}
+
+/* =========================
+   TOP BAR (mapea .barranavegacion)
+========================= */
+.top-bar-admin {
+    display: grid;
+    grid-template-columns: 36rem 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    height: var(--header-h);
+    background-color: var(--oscuro);
+    color: var(--blanco);
+    padding: 0 2rem;
+}
+
+.date-time-admin {
+    width: 36rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.header-center-admin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.exit-container-admin {
+    display: flex;
+    align-items: center;
+}
+
+.calendar-icon-admin {
+    width: 5rem;
+}
+
+.date-time-admin span {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    font-size: 1.5rem;
+    font-weight: 700;
+    -webkit-font-feature-settings: "tnum" 1;
+    -moz-font-feature-settings: "tnum" 1;
+}
+
+.logo-admin {
+    width: 7rem;
+    height: auto;
+}
+
+.header-center-admin h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.exit-link-admin {
+    color: var(--blanco);
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.exit-link-admin::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.3rem;
+    width: 0;
+    height: .2rem;
+    background: var(--blanco);
+    transition: width .3s ease;
+}
+
+.exit-link-admin:hover::after {
+    width: 100%;
+}
+
+/* === FIX botón Salir como texto (sin caja) === */
+.top-bar-admin .exit-container-admin .exit-link-admin {
+    display: inline !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    color: var(--blanco) !important;
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.top-bar-admin .exit-container-admin .exit-link-admin:hover,
+.top-bar-admin .exit-container-admin .exit-link-admin:focus {
+    opacity: .9;
+}
+
+
+/* =========================
+   LAYOUT PRINCIPAL (sidebar + contenido)
+========================= */
+.main-layout-admin {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    transition: grid-template-columns .25s ease;
+    min-height: 0;
+    background: var(--grisnoticias);
+    padding-left: unset;
+    padding-right: unset;
+    padding-top: unset;
+    padding-bottom: unset;
+    -webkit-transition: grid-template-columns .25s ease;
+    -moz-transition: grid-template-columns .25s ease;
+    -ms-transition: grid-template-columns .25s ease;
+    -o-transition: grid-template-columns .25s ease;
+    flex: 1;
+    min-height: calc(100vh - var(--header));
+    height: calc(100vh - var(--header-h));
+    overflow: hidden;
+}
+
+.main-layout-admin.collapsed {
+    grid-template-columns: var(--sidebar-w-colapsada) 1fr;
+}
+
+/* =========================
+   SIDEBAR (mapea .menuNavegacion)
+========================= */
+.sidebar-admin {
+    position: sticky;
+    top: 0;
+    height: calc(100vh - var(--header-h));
+    background: var(--oscuro);
+    border-left: 1rem solid var(--oscuro);
+    overflow: clip;
+    width: 100%;
+    transition: none;
+    z-index: 100;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+}
+
+/* opcional: suaviza ocultar el texto */
+.section-admin {
+    transition: opacity .25s ease, width .25s ease;
+}
+
+.sidebar-admin.active .section-admin {
+    opacity: 0;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.menu-list-admin {
+    width: 100%;
+    margin: 5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu-list-admin li {
+    position: relative;
+    width: 100%;
+    border-top-left-radius: 3rem;
+    border-bottom-left-radius: 3rem;
+}
+
+.menu-list-admin li:hover,
+.menu-list-admin li.hovered {
+    background-color: var(--grisnoticias);
+}
+
+.menu-list-admin a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    text-decoration: none;
+    color: var(--blanco);
+    z-index: 1;
+}
+
+.menu-list-admin li:hover a,
+.menu-list-admin li.hovered a {
+    color: var(--oscuro);
+}
+
+.icon-admin {
+    min-width: 9rem;
+    height: 6rem;
+    line-height: 6rem;
+    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+.icon-admin img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: contain;
+}
+
+.section-admin {
+    padding: 0 1rem;
+    height: 6rem;
+    line-height: 6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* “píldora” de la opción activa/hover (como el HTML original) */
+.menu-list-admin li:hover a::before,
+.menu-list-admin li.hovered a::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -5rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    box-shadow: 3.5rem 3.5rem 0 1rem var(--grisnoticias);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.menu-list-admin li:hover a::after,
+.menu-list-admin li.hovered a::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -5rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    box-shadow: 3.5rem -3.5rem 0 1rem var(--grisnoticias);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ocultar texto cuando está colapsado */
+.sidebar-admin.active .section-admin {
+    display: none;
+}
+
+/* =========================
+   CONTENT (mapea .contenido)
+========================= */
+.content-admin {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    /* ✅ */
+}
+
+.content-body-admin {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0;
+    /* <-- importante: evita desalineaciones raras */
+}
+
+.no-scroll {
+    overflow: hidden !important;
+}
+
+/* Banda superior con botón */
+.toggle-container-admin {
+    position: sticky;
+    top: 4px;
+    z-index: 50;
+    padding: 8px 0 0 12px;
+}
+
+.admin-dash-head {
+    width: 100%;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: var(--sombra);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+}
+
+.dash-head h2 {
+    margin: 0;
+    font-size: 18px;
+    /* más compacto */
+    font-weight: 900;
+}
+
+.dash-head p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+}
+
+.dash-tabs-content {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.main-layout-admin.collapsed .toggle-container-admin {
+    left: calc(var(--sidebar-w-colapsada) + 12px);
+}
+
+.toggle-icon-admin {
+    width: 46px;
+    height: 46px;
+    background: #fff;
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--sombra);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform .15s ease;
+    position: relative;
+}
+
+.toggle-icon-admin:hover {
+    transform: scale(1.05);
+}
+
+.toggle-icon-admin img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+}
+
+/* =========================
+   ADMIN CONTAINER (estándar)
+========================= */
+.admin-container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 16px 12px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* =========================
+   ADMIN CONTAINER (fluid para dashboards)
+========================= */
+.admin-container-fluid {
+    width: min(93%, 1500px);
+    margin: 0 auto;
+    padding: 10px 0 18px;
+    /* sin padding lateral aquí */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* =========================
+   MODO: Dashboard sin scroll
+   (solo cuando estás en /admin)
+========================= */
+.content-body-admin.admin-no-scroll {
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+}
+
+/* IMPORTANTÍSIMO:
+   si el body del contenido tiene padding + cards, igual puede desbordar.
+   En modo dashboard, restringimos el alto del contenedor al viewport disponible.
+*/
+.content-body-admin.admin-no-scroll {
+    height: calc(100vh - var(--header-h) - var(--footer-h));
+    padding-bottom: 0 !important;
+}
+
+.content-body-admin.admin-no-scroll .toggle-container-admin {
+    padding-top: 6px;
+}
+
+/* =========================
+   CARDS (mapea .cardBox y .card)
+========================= */
+.card-box-admin {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 0;
+    /* <-- clave: sin padding lateral aquí */
+}
+
+.card-admin {
+    background: var(--blanco);
+    box-shadow: var(--sombra);
+    border-radius: 12px;
+    padding: 18px;
+    width: 100%;
+
+    /* ✅ altura robusta */
+    height: 330px !important;
+    min-height: 0 !important;
+}
+
+.card-admin h2 {
+    margin: 0;
+}
+
+/* =========================
+   FOOTER (mapea .footer)
+========================= */
+.footer-admin {
+    height: var(--footer-h);
+    background-color: var(--oscuro);
+    color: var(--blanco);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-admin p {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+html,
+body {
+    overflow: auto;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width:1200px) {
+    .card-box-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .card-admin {
+        min-height: 320px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .card-admin {
+        min-height: 36rem;
+    }
+}
+
+@media (max-width:768px) {
+    .header-center-admin h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width:480px) {
+    .header-center-admin h1 {
+        font-size: small;
+    }
+
+    .logo-admin {
+        width: 5rem;
+    }
+}

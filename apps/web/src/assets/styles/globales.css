@@ -1,0 +1,211 @@
+:root {
+    --font-sans: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+html,
+body {
+    font-family: var(--font-sans);
+}
+
+:root {
+    --blanco: #ffffff;
+    --negro: #212121;
+    --claro: #7adbf1;
+    --medio: #2e5b9b;
+    --oscuro: #10106a;
+    --grisnoticias: #f5f5f5;
+    --fondo: #DBE4F2;
+    --nav-h: 56px;
+}
+
+* {
+
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif
+}
+
+html,
+body {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.6rem;
+    font-family: "Poppins", sans-serif;
+    background: #ffffff;
+}
+
+.dashboard-bg {
+    min-height: 100dvh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--oscuro);
+}
+
+.encabezado img {
+    width: 70px;
+    height: auto;
+}
+
+.titulo {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+@media(max-width:768px) {
+    .titulo {
+        font-size: 2rem;
+    }
+}
+
+@media(max-width:480px) {
+    .titulo {
+        font-size: small;
+    }
+
+    .encabezado img {
+        width: 50px;
+    }
+}
+
+.barranavegacion {
+    background-color: var(--oscuro);
+    cursor: default;
+    height: var(--nav-h);
+    min-height: var(--nav-h);
+    line-height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    box-sizing: border-box;
+}
+
+.contenedor-calendario {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+    gap: .5rem;
+    font-size: 1.2rem;
+    color: var(--blanco);
+    padding-left: 3rem;
+}
+
+.fecha,
+.hora {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.iconocalendario {
+    width: 5rem;
+}
+
+.navegacion-principal {
+    display: flex;
+    cursor: none;
+    align-items: center;
+    height: 100%;
+}
+
+.links {
+    margin-right: 4rem;
+    display: inline-block;
+    text-align: right;
+    color: var(--blanco);
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+}
+
+.links::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: .2rem;
+    background-color: var(--blanco);
+    transition: width 0.3s ease;
+    -webkit-transition: width 0.3s ease;
+    -moz-transition: width 0.3s ease;
+    -ms-transition: width 0.3s ease;
+    -o-transition: width 0.3s ease;
+}
+
+.links:hover::after {
+    width: 100%
+}
+
+/* ===== Layout de página para el Dashboard ===== */
+.page {
+    min-height: 100dvh;
+    /* ocupa todo el alto visible */
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    /* header | main (crece) | footer */
+}
+
+/* el main crece y permite scroll si el contenido es alto */
+.page>main {
+    min-height: 0;
+    /* evita overflow colapsado en grid */
+    overflow: auto;
+    /* si el contenido se pasa, scrollea el main */
+}
+
+/* asegúrate que el footer no esté 'fixed' ni 'absolute' */
+.footerunidadtic {
+    position: static;
+}
+
+/* Footer centrado real + botón a la derecha */
+footer.footerunidadtic {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    /* ajusta si usas otra altura */
+    width: 100%;
+}
+
+footer.footerunidadtic .unidadtic {
+    margin-left: 0 !important;
+    /* pisa el auto del estilo scoped */
+    margin-right: 0 !important;
+    text-align: center;
+}
+
+footer.footerunidadtic .login {
+    position: absolute;
+    /* no rompe el centrado del texto */
+    right: 16px;
+    top: 1.4rem;
+    transform: translateY(-50%);
+}

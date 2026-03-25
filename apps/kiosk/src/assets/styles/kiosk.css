@@ -1,0 +1,202 @@
+html,
+body,
+#app {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    background: linear-gradient(135deg, #0b1220, #0f1a2e);
+    font-family: system-ui, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ===== Layout ===== */
+.kioskRoot {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 48px 24px;
+}
+
+.kioskHeader {
+    text-align: center;
+    color: rgba(255, 255, 255, .92);
+}
+
+.kioskHeader h1 {
+    margin: 0;
+    font-size: 64px;
+    letter-spacing: 2px;
+}
+
+.kioskHeader p {
+    margin: 10px 0 0;
+    font-size: 20px;
+    opacity: .85;
+}
+
+.kioskMain {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.kioskCard {
+    width: min(980px, 92vw);
+    padding: 26px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, .10);
+    background: rgba(255, 255, 255, .05);
+    backdrop-filter: blur(8px);
+}
+
+.kioskLabel {
+    display: block;
+    color: rgba(255, 255, 255, .85);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.kioskRutInput {
+    width: 100%;
+    height: 96px;
+    border-radius: 14px;
+    border: 2px solid rgba(120, 180, 255, .65);
+    background: rgba(0, 0, 0, .25);
+    color: white;
+    font-size: 56px;
+    padding: 0 18px;
+    outline: none;
+}
+
+.kioskEmitBtn {
+    width: 100%;
+    margin-top: 18px;
+    height: 86px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-size: 38px;
+    font-weight: 800;
+    background: #6bc36a;
+    color: #0b1a0b;
+    transition: all .08s ease;
+}
+
+.kioskEmitBtn:active {
+    transform: translateY(2px) scale(0.98);
+}
+
+.kioskEmitBtn.pressed {
+    transform: translateY(2px) scale(0.98);
+    filter: brightness(1.1);
+}
+
+.kioskHint {
+    margin-top: 14px;
+    color: rgba(255, 255, 255, .8);
+    font-size: 18px;
+}
+
+.kioskStatus {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .08);
+    color: white;
+    font-size: 18px;
+}
+
+.kioskStatus.err {
+    background: rgba(255, 0, 0, .15);
+    color: #ffb3b3;
+}
+
+/* ===== Keypad ===== */
+.kioskKeypad {
+    margin-top: 18px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.kioskKeypad button {
+    height: 72px;
+    border-radius: 14px;
+    font-size: 28px;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, .15);
+    background: rgba(255, 255, 255, .06);
+    color: white;
+    transition: all .08s ease;
+    cursor: pointer;
+}
+
+.kioskKeypad button:active {
+    transform: translateY(2px) scale(0.98);
+    filter: brightness(1.2);
+}
+
+.kioskKeypad button.pressed {
+    transform: translateY(2px) scale(0.98);
+    filter: brightness(1.25);
+    background: rgba(255, 255, 255, .15);
+}
+
+.kioskKeypad .wide {
+    grid-column: span 3;
+    height: 60px;
+    font-size: 20px;
+}
+
+.kioskFooter {
+    color: rgba(255, 255, 255, .6);
+    font-size: 16px;
+}
+
+/* ===== OVERLAY ALERT ===== */
+.kioskOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.kioskOverlayModal {
+    width: min(700px, 92vw);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    background: rgba(20, 25, 35, .92);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .45);
+    padding: 22px 22px 18px;
+    color: rgba(255, 255, 255, .92);
+}
+
+.kioskOverlayModal.ok {
+    border-color: rgba(107, 195, 106, .55);
+}
+
+.kioskOverlayTitle {
+    font-size: 26px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.kioskOverlayMsg {
+    font-size: 20px;
+    line-height: 1.35;
+    opacity: .95;
+}
