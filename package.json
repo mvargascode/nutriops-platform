@@ -1,6 +1,14 @@
 {
   "dependencies": {
+    "dotenv": "^17.3.1",
     "mysql2": "^3.20.0",
     "xlsx": "^0.18.5"
-  }
+  },
+
+  "scripts": {
+  "seed:60dias": "node scripts/seed-consumos-60dias.js",
+  "seed:hoy:almuerzo": "node scripts/seed-hoy-almuerzo.js",
+  "seed:hoy:full": "node scripts/seed-hoy-desayuno-almuerzo.js"
+}
+  
 }
