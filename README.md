@@ -253,6 +253,40 @@ Permite simular la carga de menú semanal en el sistema.
 
 ---
 
+## 📸 Screenshots
+
+### Dashboard Público
+![Dashboard](assets/screenshots/Dashboard-Publico.png)
+
+### Menú Semanal - Dashboard Público
+![Menú Semana - Dashboard Público](assets/screenshots/Menu-Semanal-Dashboard-Publico.png)
+
+### Admin Dashboard
+![Admin Dashboard](assets/screenshots/Admin-Dashboard.png)
+
+### Gestión Menú
+![Gestión Menú](assets/screenshots/Gestion-Menu.png)
+
+### Menú Semana - Admin Dashboard
+![Menú Semana - Admin Dashboard](assets/screenshots/Menu-Semanal-Admin-Dashboard.png)
+
+### Importar Menú - Admin Dashboard
+![Importar Menú - Admin Dashboard](assets/screenshots/Importar-Menu-Admin-Dashboard.png)
+
+### Reportes - Admin Dashboard
+![Reportes - Admin Dashboard](assets/screenshots/Reportes-30-dias.png)
+
+### Reportes - Admin Dashboard
+![Reportes - Admin Dashboard](assets/screenshots/Reportes-30-dias-2.png)
+
+### Usuarios - Admin Dashboard
+![Usuarios - Admin Dashboard](assets/screenshots/Usuarios.png)
+
+### Tótem NutriOps
+![Tótem NutriOps](assets/screenshots/Totem-NutriOps.png)
+
+---
+
 ## Estado del proyecto
 
 Proyecto en desarrollo activo con mejoras continuas en arquitectura, rendimiento y visualización.
