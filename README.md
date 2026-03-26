@@ -1,108 +1,197 @@
-# NutriOps Platform
+# 🍽️ NutriOps Platform
 
-NutriOps is an operational platform designed to manage institutional food services.  
-It provides dashboards, reporting and operational tools to track meal consumption, analyze service performance and support data-driven decision making.
+Plataforma operativa para la gestión y análisis de servicios de alimentación institucional (hospitales, universidades, casinos corporativos, etc).
 
-The platform is designed for environments such as hospitals, universities, corporate cafeterias and other institutional food services.
-
----
-
-## Key Features
-
-- Operational dashboards for monitoring meal consumption
-- Real-time data visualization
-- Institutional food service management
-- Reporting and analytics tools
-- Modular architecture for different operational environments
-- Scalable backend services
+NutriOps permite monitorear consumos, visualizar indicadores en tiempo real, administrar operaciones y apoyar la toma de decisiones mediante dashboards interactivos.
 
 ---
 
-## Architecture
+## Características principales
 
-NutriOps follows a modular architecture using a monorepo structure.
+* Dashboards operacionales en tiempo real
+* Visualización en vivo mediante SSE (Server-Sent Events)
+* Gestión de consumo por tipo de comida (desayuno, almuerzo, once)
+* Reportes y analítica de consumo
+* Gestión de usuarios por roles
+* Arquitectura modular (monorepo)
+* Módulo kiosk para registro de consumos
 
-```
+---
+
+## Arquitectura
+
+El proyecto sigue una arquitectura modular basada en monorepo:
+
+```text
 nutriops-platform
 │
-├─ apps
-│  ├─ api     # Backend services and API
-│  ├─ web     # Administrative dashboard (Vue 3)
-│  └─ kiosk   # Kiosk / terminal interface
+├── apps
+│   ├── api     # Backend (Node.js + Express)
+│   ├── web     # Dashboard administrativo (Vue 3 + Vite + TypeScript)
+│   └── kiosk   # Interfaz tipo tótem / terminal
 │
-├─ package.json
-├─ package-lock.json
-├─ .gitignore
-└─ README.md
+├── scripts     # Seeds y utilidades de carga de datos
+├── package.json
+└── README.md
 ```
 
-Each module is responsible for a specific part of the platform.
+### Módulos
 
-| Module | Description |
-|------|-------------|
-| **api** | Backend services, authentication and data management |
-| **web** | Administrative dashboard for monitoring operations |
-| **kiosk** | Interface used in terminals or kiosks |
+* **api**: autenticación, lógica de negocio y acceso a datos
+* **web**: dashboard administrativo con visualización en tiempo real
+* **kiosk**: interfaz para registro de consumos en terminales
 
 ---
 
-## Tech Stack
+## Tiempo real con SSE
+
+NutriOps utiliza **Server-Sent Events (SSE)** para enviar datos desde el servidor al cliente en tiempo real.
+
+### Uso dentro del sistema
+
+* Aforo en vivo
+* Actividad del casino
+* Consumo del día
+* Actualización automática de dashboards
+
+### ¿Por qué SSE?
+
+* Más simple que WebSockets
+* Ideal para comunicación unidireccional
+* Menor complejidad para dashboards
+
+---
+
+## Stack tecnológico
 
 ### Frontend
-- Vue 3
-- Vite
-- TypeScript
+
+* Vue 3
+* Vite
+* TypeScript
 
 ### Backend
-- Node.js
-- Express
 
-### Data
-- SQL database (MySQL / MariaDB)
+* Node.js
+* Express
 
----
+### Base de datos
 
-## Platform Capabilities
-
-NutriOps provides tools for:
-
-- Monitoring institutional food service activity
-- Tracking meal consumption
-- Generating operational reports
-- Supporting decision-making through dashboards
-- Managing food service operations
+* MySQL / MariaDB
 
 ---
 
-## Getting Started
+## ⚙️ Instalación y ejecución
 
-Clone the repository: git clone https://github.com/mvargascode/nutriops-platform.git
+### 1. Clonar repositorio
 
+```bash
+git clone https://github.com/mvargascode/nutriops-platform.git
+cd nutriops-platform
+```
 
-Install dependencies: npm install
+### 2. Instalar dependencias
 
+```bash
+npm install
+```
 
-Run development environment: npm run dev
+### 3. Configurar variables de entorno
+
+Crear archivo `.env`:
+
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=casino_nutriops
+DB_USER=root
+DB_PASSWORD=tu_password
+JWT_SECRET=super_secret_key
+```
+
+### 4. Crear base de datos
+
+```sql
+CREATE DATABASE casino_nutriops;
+```
+
+### 5. Ejecutar el sistema
+
+#### Backend
+
+```bash
+npm run dev:api
+```
+
+#### Frontend
+
+```bash
+npm run dev:web
+```
+
+#### Kiosk
+
+```bash
+npm run dev:kiosk
+```
 
 ---
 
-## Project Status
+## Datos de prueba (Seeds)
 
-This project is currently under active development.
+Puedes generar datos de prueba con:
 
-New modules and improvements are continuously being implemented.
+```bash
+node scripts/seed-consumos-60dias.js
+node scripts/seed-hoy-almuerzo.js
+node scripts/seed-hoy-desayuno-almuerzo.js
+```
+
+Estos scripts generan datos realistas para pruebas y dashboards.
 
 ---
 
-## Author
+## Usuarios demo
 
-Milton Vargas  
+Usuarios de prueba para acceder al sistema:
+
+| Rol       | Usuario | Contraseña |
+| --------- | ------- | ---------- |
+| Admin     | admin   | admin123   |
+| Nutrición | nutri   | nutri123   |
+| RRHH      | rrhh    | rrhh123    |
+| Usuario   | user    | user123    |
+
+> Puedes crear estos usuarios manualmente o mediante scripts.
+
+---
+
+## Funcionalidades
+
+* Monitoreo de aforo
+* Consumo por tipo de comida
+* Visualización en tiempo real
+* Reportes históricos
+* Administración de usuarios
+
+---
+
+## Estado del proyecto
+
+Proyecto en desarrollo activo con mejoras continuas en rendimiento, visualización y arquitectura.
+
+---
+
+## Autor
+
+**Milton Vargas**
 Software Engineer | Backend, Systems & Infrastructure
 
-GitHub: https://github.com/mvargascode
-LinkedIn: https://www.linkedin.com/in/miltonvargasa
+* GitHub: https://github.com/mvargascode
+* LinkedIn: https://www.linkedin.com/in/miltonvargasa
 
 ---
 
-## License
+## 📄 Licencia
+
 MIT License
