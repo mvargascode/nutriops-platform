@@ -1,4 +1,10 @@
 # 🍽️ NutriOps Platform
+![Node.js](https://img.shields.io/badge/Node.js-18+-green)
+![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-Yes-blue)
+![MySQL](https://img.shields.io/badge/MySQL-Database-orange)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-Active-success)
 
 Plataforma operativa para la gestión y análisis de servicios de alimentación institucional, orientada a entornos como hospitales, universidades y casinos corporativos.
 
