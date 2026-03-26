@@ -12,6 +12,19 @@ NutriOps permite monitorear consumos, visualizar indicadores en tiempo real, adm
 
 ---
 
+## 🏥 Contexto real
+
+Este sistema fue diseñado para gestionar el flujo de alimentación en entornos reales como hospitales, donde es necesario:
+
+- Controlar el aforo en tiempo real
+- Registrar consumos por tipo de comida
+- Evitar sobrecapacidad del casino
+- Analizar patrones de consumo
+
+El sistema simula condiciones reales mediante datos históricos y generación de consumo realista.
+
+---
+
 ## Características principales
 
 - Dashboards operacionales en tiempo real
@@ -284,6 +297,18 @@ Permite simular la carga de menú semanal en el sistema.
 
 ### Tótem NutriOps
 ![Tótem NutriOps](assets/screenshots/Totem-NutriOps.png)
+
+---
+
+## 🧠 Aprendizajes
+
+Durante el desarrollo de este proyecto se abordaron desafíos reales como:
+
+- Implementación de SSE para dashboards en tiempo real
+- Diseño de arquitectura modular en monorepo
+- Modelado de datos para consumo alimentario
+- Manejo de roles y autenticación en backend
+- Generación de datos realistas para testing
 
 ---
 
