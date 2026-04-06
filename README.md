@@ -274,8 +274,14 @@ Permite simular la carga de menú semanal en el sistema.
 ### Menú Semanal - Dashboard Público
 ![Menú Semana - Dashboard Público](assets/screenshots/Menu-Semanal-Dashboard-Publico.png)
 
-### Admin Dashboard
-![Admin Dashboard](assets/screenshots/Admin-Dashboard.png)
+### Login
+![Menú Semana - Dashboard Público](assets/screenshots/Login.png)
+
+### Admin Dashboard Operativo
+![Admin Dashboard](assets/screenshots/Admin-Dashboard-Operativo.png)
+
+### Admin Dashboard Ejecutivo
+![Admin Dashboard](assets/screenshots/Admin-Dashboard-Ejecutivo.png)
 
 ### Gestión Menú
 ![Gestión Menú](assets/screenshots/Gestion-Menu.png)
