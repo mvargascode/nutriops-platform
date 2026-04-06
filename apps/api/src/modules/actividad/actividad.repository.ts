@@ -27,6 +27,7 @@ export async function getHoyPorHora(): Promise<ActividadPorHoraItem[]> {
       COUNT(*) AS cantidad
     FROM consumos
     WHERE fecha = CURDATE()
+      AND created_at <= NOW()
     GROUP BY HOUR(created_at)
     ORDER BY hora;
   `);

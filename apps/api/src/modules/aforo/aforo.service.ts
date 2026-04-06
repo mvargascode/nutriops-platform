@@ -16,6 +16,21 @@ import type {
   UltimaSemanaResponse,
 } from "./aforo.types";
 
+function getChileDateYmd(date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "America/Santiago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+
+  return `${year}-${month}-${day}`;
+}
+
 export function parseTipo(value: unknown): number | null {
   if (value === undefined || value === null || value === "") return null;
 
@@ -72,7 +87,7 @@ export async function getAforoActualService() {
 export async function getAforoHoyService(
   tipo: number | null,
 ): Promise<AforoHoyPorTipoResponse | AforoHoyResumenResponse> {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getChileDateYmd();
 
   if (tipo) {
     const cantidad = await countHoyByTipo(today, tipo);
@@ -165,8 +180,6 @@ export async function getUltimaSemanaService(): Promise<UltimaSemanaResponse> {
   const dias: UltimaSemanaDia[] = [];
   const today = new Date();
 
-  const ymd = (d: Date) => d.toISOString().slice(0, 10);
-
   const desdeDate = new Date(today);
   desdeDate.setDate(today.getDate() - 6);
 
@@ -174,7 +187,7 @@ export async function getUltimaSemanaService(): Promise<UltimaSemanaResponse> {
     const d = new Date(desdeDate);
     d.setDate(desdeDate.getDate() + i);
 
-    const fecha = ymd(d);
+    const fecha = getChileDateYmd(d);
     const v = map.get(fecha) ?? { desayuno: 0, almuerzo: 0, once: 0 };
     const total = v.desayuno + v.almuerzo + v.once;
 
@@ -199,8 +212,8 @@ export async function getUltimaSemanaService(): Promise<UltimaSemanaResponse> {
   );
 
   return {
-    desde: ymd(desdeDate),
-    hasta: ymd(today),
+    desde: getChileDateYmd(desdeDate),
+    hasta: getChileDateYmd(today),
     dias,
     totales,
     serverTime: new Date().toISOString(),
