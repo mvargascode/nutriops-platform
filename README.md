@@ -280,7 +280,7 @@ Permite simular la carga de menú semanal en el sistema.
 ### Gestión Menú
 ![Gestión Menú](assets/screenshots/Gestion-Menu.png)
 
-### Menú Semana - Admin Dashboard
+### Menú Semanal - Admin Dashboard
 ![Menú Semana - Admin Dashboard](assets/screenshots/Menu-Semanal-Admin-Dashboard.png)
 
 ### Importar Menú - Admin Dashboard
