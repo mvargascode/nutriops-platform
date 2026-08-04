@@ -118,4 +118,19 @@ onBeforeUnmount(() => { if (t) clearInterval(t) })
 .navegacion-principal .links{
   color:#fff; text-decoration:none; font-weight:600;
 }
+
+@media (max-width: 768px) {
+  .contenedor-calendario {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .contenedor-calendario {
+    min-width: 0;
+    gap: .3rem;
+  }
+  .iconocalendario { width: 2.2rem; }
+  .fecha,.hora { font-size: .85rem; height: auto; }
+}
 </style>

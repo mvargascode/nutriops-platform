@@ -212,14 +212,6 @@ footer.footerunidadtic .login {
 
 /* ===== Responsive: barra de navegacion / header ===== */
 @media (max-width: 768px) {
-        .barranavegacion {
-                    height: auto;
-                    min-height: var(--nav-h);
-                    line-height: normal;
-                    flex-wrap: wrap;
-                    padding: 0.8rem 0;
-        }
-
     .contenedor-calendario {
                 padding-left: 1rem;
                 font-size: 1rem;
