@@ -41,7 +41,7 @@ const fmt = (n: number) => new Intl.NumberFormat("es-CL").format(n);
   <div class="gauge">
     <div class="title">{{ title ?? "Capacidad Casino" }}</div>
 
-    <svg :width="W" :height="H" :viewBox="`0 0 ${W} ${H}`" aria-hidden="true">
+    <svg class="gauge-svg" :viewBox="`0 0 ${W} ${H}`" aria-hidden="true">
       <!-- fondo -->
       <path
         :d="`M ${cx - r},${cy} A ${r},${r} 0 0 1 ${cx + r},${cy}`"
@@ -100,10 +100,18 @@ const fmt = (n: number) => new Intl.NumberFormat("es-CL").format(n);
 .gauge {
   display: grid;
   place-items: center;
+  width: 100%;
+  max-width: 100%;
 }
 .title {
   margin-bottom: 0.25rem;
   font-weight: 700;
   color: #333;
+}
+.gauge-svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
 }
 </style>
