@@ -1253,6 +1253,22 @@ onUnmounted(() => {
   opacity: 0.6;
 }
 
+@media (max-width: 900px) {
+  .actividad-top-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .actividad-mini-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .actividad-top-row,
+  .actividad-mini-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* =========================
    Tooltip
 ========================= */
