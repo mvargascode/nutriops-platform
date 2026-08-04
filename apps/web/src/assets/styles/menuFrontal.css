@@ -22,33 +22,28 @@ main {
 
 .contenedor-principal {
       margin: 3rem;
-      position: relative;
-      height: 65rem;
+}
+
+.tabs {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
 }
 
 .pestaña {
-      position: absolute;
       background-color: #adadad;
-      width: 100%;
+      flex: 1 1 12rem;
       max-width: 15rem;
       height: 5rem;
       font-size: 1rem;
       border-radius: 1rem 1rem 0 0;
+      display: flex;
       align-items: center;
+      justify-content: center;
       text-align: center;
       padding: .5rem;
       cursor: pointer;
 
-}
-
-.pestaña-diario {
-      top: -5rem;
-      left: 14rem;
-}
-
-.pestaña-mensual {
-      top: -5rem;
-      left: 30rem;
 }
 
 .pestaña:hover {
@@ -63,10 +58,10 @@ main {
       width: 100%;
       max-width: 160rem;
       height: 60rem;
-      margin: 5rem auto;
+      margin: 0 auto 3rem;
       padding: 1rem;
       align-items: center;
-      border-radius: 1rem;
+      border-radius: 0 1rem 1rem 1rem;
       box-shadow: var(--sombra);
       display: none;
 }
@@ -331,23 +326,13 @@ h2 {
 @media (max-width: 900px) {
       .contenedor-principal {
                 margin: 1.5rem 1rem;
-                height: auto;
-      }
-
-      .tabs {
-                display: flex;
-                gap: 0.5rem;
-                margin-bottom: 1rem;
       }
 
       .pestaña {
-                position: static;
-                width: auto;
+                flex: 1 1 8rem;
                 max-width: none;
-                flex: 1;
                 height: auto;
                 padding: 1rem 0.5rem;
-                border-radius: 1rem 1rem 0 0;
       }
 
       .grid {
