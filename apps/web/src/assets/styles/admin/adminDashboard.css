@@ -341,7 +341,7 @@ body {
 .toggle-container-admin {
     position: sticky;
     top: 4px;
-    z-index: 50;
+    z-index: 250;
     padding: 8px 0 0 12px;
 }
 

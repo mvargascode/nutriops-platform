@@ -390,6 +390,8 @@ onMounted(() => {
 
 <style scoped>
 .reports-page {
+  width: min(93%, 1500px);
+  margin: 0 auto;
   padding: 0 12px;
   display: flex;
   flex-direction: column;
