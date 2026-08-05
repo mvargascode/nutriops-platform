@@ -131,4 +131,15 @@ watchEffect(() => {
 .menu-tab-content {
   width: 100%;
 }
+
+@media (max-width: 560px) {
+  .menu-tabs {
+    border-radius: 14px;
+    width: 100%;
+  }
+
+  .menu-tab-btn {
+    flex: 1 1 auto;
+  }
+}
 </style>
