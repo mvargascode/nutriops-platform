@@ -31,6 +31,7 @@ main {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
+      margin-left: 1.2rem;
 }
 
 .pestaña {
