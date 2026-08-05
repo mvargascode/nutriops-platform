@@ -25,14 +25,16 @@ main {
 }
 
 .tabs {
+      position: relative;
       display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
-      margin-left: 14rem;
 }
 
 .pestaña {
       background-color: #adadad;
-      width: 15rem;
+      flex: 1 1 12rem;
+      max-width: 15rem;
       height: 5rem;
       font-size: 1rem;
       border-radius: 1rem 1rem 0 0;
@@ -330,20 +332,6 @@ h2 {
 @media (max-width: 900px) {
       .contenedor-principal {
                 margin: 1.5rem 1rem;
-      }
-
-      .tabs {
-                margin-left: 0;
-                gap: 0.5rem;
-                flex-wrap: wrap;
-                margin-bottom: 1rem;
-      }
-
-      .pestaña {
-                width: auto;
-                flex: 1 1 8rem;
-                height: auto;
-                padding: 1rem 0.5rem;
       }
 
       .grid {
