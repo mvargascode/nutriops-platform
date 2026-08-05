@@ -851,7 +851,7 @@ onUnmounted(() => {
 .grid-line {
   position: absolute;
   left: 0;
-  right: 0;
+  right: 10px;
   height: 1px;
   background: rgba(0, 0, 0, 0.06);
 }
@@ -869,9 +869,13 @@ onUnmounted(() => {
 /* bandas */
 .bands {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 10px;
+  bottom: 0;
   padding-bottom: 22px;
   pointer-events: none;
+  z-index: 2;
 }
 .band {
   position: absolute;
@@ -885,7 +889,7 @@ onUnmounted(() => {
   top: 10px;
   left: 12px;
   font-size: 14px;
-  opacity: 0.28;
+  opacity: 0.45;
   font-weight: 700;
 }
 .band-desayuno {
@@ -901,7 +905,10 @@ onUnmounted(() => {
 /* barras (hora) */
 .bars {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 10px;
+  bottom: 0;
   padding-top: 6px;
   padding-bottom: 0px;
   display: grid;
@@ -909,6 +916,7 @@ onUnmounted(() => {
   grid-auto-columns: minmax(0, 1fr);
   align-items: end;
   gap: 4px;
+  z-index: 1;
 }
 .bar-col {
   display: flex;
