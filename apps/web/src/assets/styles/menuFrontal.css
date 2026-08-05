@@ -22,33 +22,27 @@ main {
 
 .contenedor-principal {
       margin: 3rem;
-      position: relative;
-      height: 65rem;
+}
+
+.tabs {
+      display: flex;
+      gap: 1rem;
+      margin-left: 14rem;
 }
 
 .pestaña {
-      position: absolute;
       background-color: #adadad;
-      width: 100%;
-      max-width: 15rem;
+      width: 15rem;
       height: 5rem;
       font-size: 1rem;
       border-radius: 1rem 1rem 0 0;
+      display: flex;
       align-items: center;
+      justify-content: center;
       text-align: center;
       padding: .5rem;
       cursor: pointer;
 
-}
-
-.pestaña-diario {
-      top: -5rem;
-      left: 14rem;
-}
-
-.pestaña-mensual {
-      top: -5rem;
-      left: 30rem;
 }
 
 .pestaña:hover {
@@ -63,7 +57,7 @@ main {
       width: 100%;
       max-width: 160rem;
       height: 60rem;
-      margin: 5rem auto;
+      margin: 0 auto 5rem;
       padding: 1rem;
       align-items: center;
       border-radius: 1rem;
@@ -181,6 +175,11 @@ main {
 h2 {
       text-align: center;
       margin: 1rem;
+}
+
+/* Titulos de las tarjetas del dashboard: escalado fluido en anchos intermedios */
+.contenedor h2 {
+      font-size: clamp(1.8rem, 1.2vw + 0.72rem, 2.4rem);
 }
 
 .comida,
@@ -331,23 +330,20 @@ h2 {
 @media (max-width: 900px) {
       .contenedor-principal {
                 margin: 1.5rem 1rem;
-                height: auto;
       }
 
       .tabs {
-                display: flex;
+                margin-left: 0;
                 gap: 0.5rem;
+                flex-wrap: wrap;
                 margin-bottom: 1rem;
       }
 
       .pestaña {
-                position: static;
                 width: auto;
-                max-width: none;
                 flex: 1 1 8rem;
                 height: auto;
                 padding: 1rem 0.5rem;
-                border-radius: 1rem 1rem 0 0;
       }
 
       .grid {

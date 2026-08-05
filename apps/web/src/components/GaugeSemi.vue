@@ -105,7 +105,7 @@ const fmt = (n: number) => new Intl.NumberFormat("es-CL").format(n);
 }
 .title {
   margin-bottom: 0.25rem;
-  font-size: 24px;
+  font-size: clamp(1.8rem, 1.2vw + 0.72rem, 2.4rem);
   font-weight: 700;
   color: #333;
 }
