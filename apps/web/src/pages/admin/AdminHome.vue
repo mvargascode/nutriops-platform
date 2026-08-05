@@ -230,6 +230,25 @@ const actividadUpdatedAt = computed(() =>
   formatIsoCL(actividad.value?.serverTime),
 );
 
+/* Achicar etiquetas del eje X cuando no caben todas */
+const chartAreaRef = ref<HTMLElement | null>(null);
+const chartAreaWidth = ref(0);
+let chartAreaObserver: ResizeObserver | null = null;
+
+const MIN_PX_PER_LABEL = 34;
+
+const horaLabelStep = computed(() => {
+  const n = seriesHora.value.length;
+  if (!n || !chartAreaWidth.value) return 1;
+  const fit = Math.floor(chartAreaWidth.value / MIN_PX_PER_LABEL);
+  if (fit >= n) return 1;
+  return Math.max(1, Math.ceil(n / Math.max(1, fit)));
+});
+
+function showHoraLabel(index: number) {
+  return index % horaLabelStep.value === 0;
+}
+
 /* tooltip hora */
 function showTipHora(ev: MouseEvent, h: number, c: number) {
   const el = ev.currentTarget as HTMLElement | null;
@@ -448,11 +467,25 @@ onMounted(async () => {
   startOcupacionSse();
 });
 
+watch(chartAreaRef, (el) => {
+  if (chartAreaObserver) {
+    chartAreaObserver.disconnect();
+    chartAreaObserver = null;
+  }
+  if (!el) return;
+
+  chartAreaObserver = new ResizeObserver((entries) => {
+    chartAreaWidth.value = entries[0]?.contentRect?.width ?? 0;
+  });
+  chartAreaObserver.observe(el);
+});
+
 onUnmounted(() => {
   stopActividadSse();
   stopOcupacionSse();
 
   if (tHora) clearInterval(tHora);
+  if (chartAreaObserver) chartAreaObserver.disconnect();
 });
 </script>
 
@@ -481,7 +514,7 @@ onUnmounted(() => {
               <div class="y-tick">{{ yTicksHora.min }}</div>
             </div>
 
-            <div class="chart-area">
+            <div class="chart-area" ref="chartAreaRef">
               <div class="grid-line top"></div>
               <div class="grid-line mid"></div>
               <div class="grid-line base"></div>
@@ -506,7 +539,11 @@ onUnmounted(() => {
               </div>
 
               <div class="bars">
-                <div v-for="p in seriesHora" :key="p.hora" class="bar-col">
+                <div
+                  v-for="(p, i) in seriesHora"
+                  :key="p.hora"
+                  class="bar-col"
+                >
                   <div
                     class="bar"
                     :class="
@@ -517,7 +554,9 @@ onUnmounted(() => {
                     @mouseleave="hideTipHora"
                   ></div>
 
-                  <div class="x-label">{{ formatHour(p.hora) }}</div>
+                  <div class="x-label">
+                    {{ showHoraLabel(i) ? formatHour(p.hora) : "" }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -867,9 +906,9 @@ onUnmounted(() => {
   padding-bottom: 0px;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr;
+  grid-auto-columns: minmax(0, 1fr);
   align-items: end;
-  gap: 10px;
+  gap: 4px;
 }
 .bar-col {
   display: flex;
