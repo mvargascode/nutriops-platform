@@ -117,6 +117,7 @@ function deltaClass(abs: number) {
   display: flex;
   flex-direction: column;
   min-height: 96px;
+  min-width: 0;
 }
 
 .kpi-label {
@@ -130,20 +131,22 @@ function deltaClass(abs: number) {
   font-size: 22px;
   font-weight: 900;
   margin-top: 6px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .kpi-value.small {
   font-size: 14px;
   font-weight: 800;
+  white-space: normal;
 }
 
 .kpi-sub {
   margin-top: 8px;
   font-size: 12px;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .kpi-sub.muted {
