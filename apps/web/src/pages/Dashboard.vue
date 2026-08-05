@@ -1006,7 +1006,7 @@ const gaugeColor = computed(() => {
 .dash-nutri-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 6px;
 }
 .dash-nutri-one .k {
   font-weight: 800;
@@ -1020,11 +1020,17 @@ const gaugeColor = computed(() => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.dash-nutri-grid .k {
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .dash-nutri-grid .m {
   background: #f8fafc;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 10px;
+  padding: 6px;
   display: grid;
   gap: 4px;
 }
