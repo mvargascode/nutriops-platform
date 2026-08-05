@@ -950,9 +950,12 @@ onUnmounted(() => {
 
 .x-label {
   margin-top: 8px;
+  height: 14px;
+  line-height: 14px;
   font-size: 12px;
   opacity: 0.55;
   white-space: nowrap;
+  overflow: hidden;
 }
 
 .graficos-footer {
