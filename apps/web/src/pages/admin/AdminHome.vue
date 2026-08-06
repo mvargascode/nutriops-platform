@@ -160,11 +160,19 @@ function ymdToShortDM(fecha: string) {
    Card 1: Consumos por hora (Actividad hoy)
 ========================= */
 type BandKey = "desayuno" | "almuerzo" | "once";
-const BANDS: { key: BandKey; label: string; start: number; end: number }[] = [
-  { key: "desayuno", label: "Desayuno", start: 7, end: 10 },
-  { key: "almuerzo", label: "Almuerzo", start: 11, end: 15 },
-  { key: "once", label: "Cena", start: 20, end: 23 },
+const BANDS: { key: BandKey; tipo: 1 | 2 | 3; label: string; start: number; end: number }[] = [
+  { key: "desayuno", tipo: 1, label: "Desayuno", start: 7, end: 10 },
+  { key: "almuerzo", tipo: 2, label: "Almuerzo", start: 11, end: 15 },
+  { key: "once", tipo: 3, label: "Cena", start: 20, end: 23 },
 ];
+
+// El color de cada franja depende del tipo (1/2/3), no del texto de "label",
+// para que no se rompa si el nombre vuelve a cambiar.
+const BAND_COLOR_CLASS: Record<1 | 2 | 3, string> = {
+  1: "band-desayuno",
+  2: "band-almuerzo",
+  3: "band-once",
+};
 
 const minHour = computed(() => {
   const base = Math.min(...BANDS.map((b) => b.start));
@@ -524,7 +532,7 @@ onUnmounted(() => {
                   v-for="b in BANDS"
                   :key="b.key"
                   class="band"
-                  :class="[`band-${b.key}`]"
+                  :class="[BAND_COLOR_CLASS[b.tipo]]"
                   :style="{
                     left:
                       ((b.start - minHour) / (maxHour - minHour + 1)) * 100 +
