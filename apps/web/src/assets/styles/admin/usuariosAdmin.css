@@ -1,6 +1,6 @@
 .usuarios-card {
     width: min(93%, 1500px);
-    margin: 0 auto;
+    margin: 14px auto 0;
     background: #fff;
     border-radius: 22px;
     padding: 24px 22px 18px;

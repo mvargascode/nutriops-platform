@@ -392,7 +392,7 @@ onMounted(() => {
 .reports-page {
   width: min(93%, 1500px);
   margin: 0 auto;
-  padding: 0 12px;
+  padding: 14px 12px 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -404,7 +404,6 @@ onMounted(() => {
   align-items: center;
   text-align: center;
   gap: 6px;
-  padding-top: 4px;
 }
 
 .reports-title h2 {
