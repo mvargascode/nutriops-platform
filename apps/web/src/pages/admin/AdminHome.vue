@@ -160,13 +160,18 @@ function ymdToShortDM(fecha: string) {
    Card 1: Consumos por hora (Actividad hoy)
 ========================= */
 type BandKey = "desayuno" | "almuerzo" | "once";
-const BANDS: { key: BandKey; tipo: 1 | 2 | 3; label: string; start: number; end: number }[] = [
-  { key: "desayuno", tipo: 1, label: "Desayuno", start: 7, end: 8 },
-  { key: "almuerzo", tipo: 2, label: "Almuerzo", start: 11, end: 15 },
-  { key: "once", tipo: 3, label: "Cena", start: 20, end: 23 },
+type ServiceBlock = { key: BandKey; tipo: 1 | 2 | 3; label: string; hours: number[] };
+
+// Eje X categorico: solo las horas dentro de un turno de servicio real, agrupadas
+// en 3 bloques (Desayuno/Almuerzo/Cena). Las horas sin servicio (09-11, 16-20) no
+// existen como categoria - no se generan las 24h del dia para despues ocultarlas.
+const SERVICE_BLOCKS: ServiceBlock[] = [
+  { key: "desayuno", tipo: 1, label: "Desayuno", hours: [7, 8, 9] },
+  { key: "almuerzo", tipo: 2, label: "Almuerzo", hours: [11, 12, 13, 14, 15] },
+  { key: "once", tipo: 3, label: "Cena", hours: [20, 21, 22, 23] },
 ];
 
-// El color de cada franja depende del tipo (1/2/3), no del texto de "label",
+// El color de cada bloque depende del tipo (1/2/3), no del texto de "label",
 // para que no se rompa si el nombre vuelve a cambiar.
 const BAND_COLOR_CLASS: Record<1 | 2 | 3, string> = {
   1: "band-desayuno",
@@ -174,47 +179,21 @@ const BAND_COLOR_CLASS: Record<1 | 2 | 3, string> = {
   3: "band-once",
 };
 
-// Huecos sin servicio entre turnos (ej. 09:00-11:00 y 16:00-20:00), derivados
-// de los propios BANDS para que nunca queden desincronizados de los horarios reales.
-const GAP_LABEL = "Sin servicio";
-const gapBands = computed(() => {
-  const sorted = [...BANDS].sort((a, b) => a.start - b.start);
-  const gaps: { start: number; end: number }[] = [];
-
-  for (let i = 0; i < sorted.length - 1; i++) {
-    const start = sorted[i].end + 1;
-    const end = sorted[i + 1].start - 1;
-    if (end >= start) gaps.push({ start, end });
-  }
-
-  return gaps;
-});
-
-const minHour = computed(() => {
-  const base = Math.min(...BANDS.map((b) => b.start));
-  const horas = actividad.value?.porHora?.map((x) => x.hora) ?? [];
-  return horas.length ? Math.min(base, Math.min(...horas)) : base;
-});
-const maxHour = computed(() => {
-  const base = Math.max(...BANDS.map((b) => b.end));
-  const horas = actividad.value?.porHora?.map((x) => x.hora) ?? [];
-  return horas.length ? Math.max(base, Math.max(...horas)) : base;
-});
-
-const seriesHora = computed(() => {
-  const from = minHour.value;
-  const to = maxHour.value;
+const dataByHour = computed(() => {
   const map = new Map<number, number>();
   (actividad.value?.porHora ?? []).forEach((p) => map.set(p.hora, p.cantidad));
-
-  const out: { hora: number; cantidad: number }[] = [];
-  for (let h = from; h <= to; h++)
-    out.push({ hora: h, cantidad: map.get(h) ?? 0 });
-  return out;
+  return map;
 });
 
+function cantidadPorHora(h: number) {
+  return dataByHour.value.get(h) ?? 0;
+}
+
 const maxCountHora = computed(() =>
-  Math.max(0, ...seriesHora.value.map((x) => x.cantidad)),
+  Math.max(
+    0,
+    ...SERVICE_BLOCKS.flatMap((b) => b.hours.map((h) => cantidadPorHora(h))),
+  ),
 );
 
 const yTicksHora = computed(() => {
@@ -230,10 +209,19 @@ const barHeightPctHora = (v: number) => {
   return Math.max(0, Math.min(100, pct));
 };
 
-function bandForHour(h: number): BandKey | null {
-  const b = BANDS.find((x) => h >= x.start && h <= x.end);
-  return b?.key ?? null;
-}
+// indice global (0..N-1) de cada hora entre los 3 bloques, para decidir que
+// etiquetas mostrar cuando no caben todas en el ancho disponible.
+const hourGlobalIndex = computed(() => {
+  const map = new Map<number, number>();
+  let i = 0;
+  for (const block of SERVICE_BLOCKS) {
+    for (const h of block.hours) {
+      map.set(h, i);
+      i++;
+    }
+  }
+  return map;
+});
 
 /* =========================
    Card 3: KPIs actividad (Actividad hoy)
@@ -260,17 +248,22 @@ const chartAreaWidth = ref(0);
 let chartAreaObserver: ResizeObserver | null = null;
 
 const MIN_PX_PER_LABEL = 34;
+const TOTAL_HORAS_SERVICIO = SERVICE_BLOCKS.reduce(
+  (acc, b) => acc + b.hours.length,
+  0,
+);
 
 const horaLabelStep = computed(() => {
-  const n = seriesHora.value.length;
+  const n = TOTAL_HORAS_SERVICIO;
   if (!n || !chartAreaWidth.value) return 1;
   const fit = Math.floor(chartAreaWidth.value / MIN_PX_PER_LABEL);
   if (fit >= n) return 1;
   return Math.max(1, Math.ceil(n / Math.max(1, fit)));
 });
 
-function showHoraLabel(index: number) {
-  return index % horaLabelStep.value === 0;
+function showHoraLabel(hora: number) {
+  const idx = hourGlobalIndex.value.get(hora) ?? 0;
+  return idx % horaLabelStep.value === 0;
 }
 
 /* tooltip hora */
@@ -543,59 +536,37 @@ onUnmounted(() => {
               <div class="grid-line mid"></div>
               <div class="grid-line base"></div>
 
-              <div class="bands">
+              <div class="hour-blocks">
                 <div
-                  v-for="b in BANDS"
-                  :key="b.key"
-                  class="band"
-                  :class="[BAND_COLOR_CLASS[b.tipo]]"
-                  :style="{
-                    left:
-                      ((b.start - minHour) / (maxHour - minHour + 1)) * 100 +
-                      '%',
-                    width:
-                      ((b.end - b.start + 1) / (maxHour - minHour + 1)) * 100 +
-                      '%',
-                  }"
+                  v-for="block in SERVICE_BLOCKS"
+                  :key="block.key"
+                  class="hour-block"
+                  :class="BAND_COLOR_CLASS[block.tipo]"
+                  :style="{ flex: `${block.hours.length} 1 0` }"
                 >
-                  <div class="band-label">{{ b.label }}</div>
-                </div>
+                  <div class="band-label">{{ block.label }}</div>
 
-                <div
-                  v-for="g in gapBands"
-                  :key="`gap-${g.start}`"
-                  class="gap-band"
-                  :style="{
-                    left:
-                      ((g.start - minHour) / (maxHour - minHour + 1)) * 100 +
-                      '%',
-                    width:
-                      ((g.end - g.start + 1) / (maxHour - minHour + 1)) * 100 +
-                      '%',
-                  }"
-                >
-                  <div class="gap-band-label">{{ GAP_LABEL }}</div>
-                </div>
-              </div>
-
-              <div class="bars">
-                <div
-                  v-for="(p, i) in seriesHora"
-                  :key="p.hora"
-                  class="bar-col"
-                >
                   <div
-                    class="bar"
-                    :class="
-                      bandForHour(p.hora) ? `bar-${bandForHour(p.hora)}` : ''
-                    "
-                    :style="{ height: barHeightPctHora(p.cantidad) + '%' }"
-                    @mouseenter="(e) => showTipHora(e, p.hora, p.cantidad)"
-                    @mouseleave="hideTipHora"
-                  ></div>
+                    class="hour-block-bars"
+                    :style="{
+                      gridTemplateColumns: `repeat(${block.hours.length}, 1fr)`,
+                    }"
+                  >
+                    <div v-for="h in block.hours" :key="h" class="bar-col">
+                      <div
+                        class="bar"
+                        :class="`bar-${block.key}`"
+                        :style="{
+                          height: barHeightPctHora(cantidadPorHora(h)) + '%',
+                        }"
+                        @mouseenter="(e) => showTipHora(e, h, cantidadPorHora(h))"
+                        @mouseleave="hideTipHora"
+                      ></div>
 
-                  <div class="x-label">
-                    {{ showHoraLabel(i) ? formatHour(p.hora) : "" }}
+                      <div class="x-label">
+                        {{ showHoraLabel(h) ? formatHour(h) : "" }}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -906,64 +877,8 @@ onUnmounted(() => {
   bottom: 22px;
 }
 
-/* bandas */
-.bands {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 10px;
-  bottom: 0;
-  padding-bottom: 22px;
-  pointer-events: none;
-  z-index: 2;
-}
-.band {
-  position: absolute;
-  top: 6px;
-  bottom: 22px;
-  border-radius: 12px;
-  opacity: 0.22;
-}
-.band-label {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  font-size: 14px;
-  opacity: 0.45;
-  font-weight: 700;
-}
-.band-desayuno {
-  background: rgba(255, 220, 120, 0.55);
-}
-.band-almuerzo {
-  background: rgba(120, 175, 255, 0.55);
-}
-.band-once {
-  background: rgba(140, 220, 140, 0.55);
-}
-
-/* huecos sin servicio (gris neutro, distinto de los colores de turno) */
-.gap-band {
-  position: absolute;
-  top: 6px;
-  bottom: 22px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.04);
-}
-.gap-band-label {
-  position: absolute;
-  top: 10px;
-  left: 4px;
-  right: 4px;
-  text-align: center;
-  font-size: 10px;
-  line-height: 1.15;
-  opacity: 0.32;
-  font-weight: 600;
-}
-
-/* barras (hora) */
-.bars {
+/* bloques de turno (eje X categorico: solo horas con servicio real) */
+.hour-blocks {
   position: absolute;
   top: 0;
   left: 0;
@@ -971,9 +886,43 @@ onUnmounted(() => {
   bottom: 0;
   padding-top: 6px;
   padding-bottom: 0px;
+  display: flex;
+  /* separador chico entre bloques: se entiende que son turnos discontinuos
+     sin que ese espacio ocupe el ancho de las horas que faltan */
+  gap: 8px;
+}
+.hour-block {
+  position: relative;
+  min-width: 0;
+  border-radius: 12px;
+}
+.band-label {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.45;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 2;
+}
+.band-desayuno {
+  background: rgba(255, 220, 120, 0.3);
+}
+.band-almuerzo {
+  background: rgba(120, 175, 255, 0.26);
+}
+.band-once {
+  background: rgba(140, 220, 140, 0.26);
+}
+
+/* barras (hora), agrupadas dentro de cada bloque de turno */
+.hour-block-bars {
+  position: absolute;
+  inset: 0;
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
   align-items: end;
   gap: 4px;
   z-index: 1;
