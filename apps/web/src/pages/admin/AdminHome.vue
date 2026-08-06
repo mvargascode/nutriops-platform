@@ -163,7 +163,7 @@ type BandKey = "desayuno" | "almuerzo" | "once";
 const BANDS: { key: BandKey; label: string; start: number; end: number }[] = [
   { key: "desayuno", label: "Desayuno", start: 7, end: 10 },
   { key: "almuerzo", label: "Almuerzo", start: 11, end: 15 },
-  { key: "once", label: "Once", start: 16, end: 20 },
+  { key: "once", label: "Cena", start: 20, end: 23 },
 ];
 
 const minHour = computed(() => {
@@ -335,7 +335,7 @@ function showTipSemana(
       ? "Desayuno"
       : tipo === "almuerzo"
         ? "Almuerzo"
-        : "Once";
+        : "Cena";
   tipSemana.value = {
     x: r.left + r.width / 2,
     y: r.top - 10,
@@ -664,7 +664,7 @@ onUnmounted(() => {
             </div>
 
             <div class="actividad-box actividad-mini">
-              <div class="actividad-label">Once</div>
+              <div class="actividad-label">Cena</div>
               <div class="actividad-value">{{ once }}</div>
             </div>
           </div>
@@ -744,7 +744,7 @@ onUnmounted(() => {
           <div class="semana-legend">
             <span class="lg"><i class="dot dot-des"></i> Desayuno</span>
             <span class="lg"><i class="dot dot-alm"></i> Almuerzo</span>
-            <span class="lg"><i class="dot dot-onc"></i> Once</span>
+            <span class="lg"><i class="dot dot-onc"></i> Cena</span>
           </div>
 
           <div class="semana-footer">Actualizado: {{ semanaUpdatedAt }}</div>
