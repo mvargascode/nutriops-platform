@@ -16,7 +16,10 @@ const overlayMsg = ref<string>("");
 const overlayIsError = ref(true);
 let overlayTimer: number | null = null;
 
+// Sin supervisión: al cerrarse el overlay (éxito o error, por timeout o click)
+// el RUT se limpia siempre, para que el totem quede listo para la próxima persona.
 function showOverlay(msg: string, isError = true, title = "Atención", ms = 3500) {
+  cancelIdleTimer();
   overlayTitle.value = title;
   overlayMsg.value = msg;
   overlayIsError.value = isError;
@@ -26,6 +29,7 @@ function showOverlay(msg: string, isError = true, title = "Atención", ms = 3500
   overlayTimer = window.setTimeout(() => {
     overlayOpen.value = false;
     overlayTimer = null;
+    resetInput();
   }, ms);
 }
 
@@ -33,6 +37,34 @@ function closeOverlay() {
   overlayOpen.value = false;
   if (overlayTimer) window.clearTimeout(overlayTimer);
   overlayTimer = null;
+  resetInput();
+}
+
+// ===== Inactividad =====
+// Si alguien deja el RUT a medio llenar y se aleja sin enviar ni limpiar,
+// se resetea solo despues de un rato para no dejar datos de una persona
+// visibles indefinidamente en un totem sin supervision.
+const IDLE_CLEAR_MS = 20000;
+let idleTimer: number | null = null;
+
+function cancelIdleTimer() {
+  if (idleTimer) window.clearTimeout(idleTimer);
+  idleTimer = null;
+}
+
+function scheduleIdleTimer() {
+  cancelIdleTimer();
+  if (!rutBody.value && !rutDv.value) return;
+  idleTimer = window.setTimeout(() => {
+    idleTimer = null;
+    if (!overlayOpen.value) resetInput();
+  }, IDLE_CLEAR_MS);
+}
+
+function resetInput() {
+  rutBody.value = "";
+  rutDv.value = "";
+  cancelIdleTimer();
 }
 
 // ===== Feedback teclas =====
@@ -71,6 +103,7 @@ function pressKey(key: string) {
       } else {
         rutDv.value = key; // ✅ aquí estaba el problema
       }
+      scheduleIdleTimer();
       return;
     }
 
@@ -81,7 +114,10 @@ function pressKey(key: string) {
   // K como DV
   if (key === "K") {
     if (!rutBody.value) return;
-    if (!rutDv.value) rutDv.value = "K";
+    if (!rutDv.value) {
+      rutDv.value = "K";
+      scheduleIdleTimer();
+    }
     return;
   }
 }
@@ -92,17 +128,18 @@ function backspaceRut() {
 
   if (rutDv.value) {
     rutDv.value = "";
+    scheduleIdleTimer();
     return;
   }
   rutBody.value = rutBody.value.slice(0, -1);
+  scheduleIdleTimer();
 }
 
 function clearRut() {
   flash("CLEAR");
   if (overlayOpen.value) return;
 
-  rutBody.value = "";
-  rutDv.value = "";
+  resetInput();
 }
 
 // ===== Enviar =====
@@ -128,10 +165,8 @@ async function submit() {
       return;
     }
 
+    // El RUT se limpia solo cuando este overlay de éxito se cierra (ver showOverlay).
     showOverlay(`Ticket emitido: ${res.tipoLabel}`, false, "✅ Listo", 2200);
-
-    // Limpia después de un poquito
-    window.setTimeout(() => clearRut(), 900);
   } catch (e: any) {
     showOverlay(e?.message ?? "Error inesperado", true, "Error", 4000);
   } finally {
@@ -164,7 +199,11 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => window.addEventListener("keydown", onKeydown));
-onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKeydown);
+  cancelIdleTimer();
+  if (overlayTimer) window.clearTimeout(overlayTimer);
+});
 </script>
 
 <template>

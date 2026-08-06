@@ -12,12 +12,20 @@ export type KioskIssueOk = {
 export type KioskIssueErr = { ok: false; message: string };
 
 export async function issueTicket(rut: string): Promise<KioskIssueOk | KioskIssueErr> {
-  const res = await fetch(`${API_BASE}/api/kiosk/issue`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ rut }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}/api/kiosk/issue`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ rut }),
+    });
+  } catch {
+    return {
+      ok: false,
+      message: "No se pudo conectar con el servidor. Intente nuevamente.",
+    };
+  }
 
   if (!res.ok) {
     const text = await res.text();
@@ -29,5 +37,9 @@ export async function issueTicket(rut: string): Promise<KioskIssueOk | KioskIssu
     }
   }
 
-  return await res.json();
+  try {
+    return await res.json();
+  } catch {
+    return { ok: false, message: "Respuesta inválida del servidor." };
+  }
 }
