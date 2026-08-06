@@ -1,10 +1,33 @@
 import { query } from "../../core/db/connection";
 import { UsuarioDB } from "./kiosk.types";
 
-function getTipoPorHorario(): { tipo: 1 | 2 | 3; label: string } | null {
-  const now = new Date();
-  const hour = now.getHours();
+const TZ = "America/Santiago";
 
+// La hora/fecha del proceso Node reflejan la zona del servidor (UTC en
+// produccion), no la de Chile. Igual que en actividad.service.ts, se calcula
+// la hora y fecha reales de Chile con Intl en vez de Date#getHours()/toISOString().
+function getChileParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    hour12: false,
+  }).formatToParts(date);
+
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "0";
+
+  let hour = Number(get("hour"));
+  if (hour === 24) hour = 0;
+
+  return {
+    hour,
+    fecha: `${get("year")}-${get("month")}-${get("day")}`,
+  };
+}
+
+function getTipoPorHorario(hour: number): { tipo: 1 | 2 | 3; label: string } | null {
   // 07:00 - 09:00
   if (hour >= 7 && hour < 9) {
     return { tipo: 1, label: "Desayuno" };
@@ -30,7 +53,8 @@ function limpiarRut(rut: string): string {
 export async function emitirTicket(rutInput: string) {
   const rut = limpiarRut(rutInput);
 
-  const horario = getTipoPorHorario();
+  const { hour, fecha: hoy } = getChileParts();
+  const horario = getTipoPorHorario(hour);
   if (!horario) {
     return { ok: false, message: "Fuera de horario de servicio" };
   }
@@ -52,8 +76,6 @@ export async function emitirTicket(rutInput: string) {
     return { ok: false, message: "Usuario inactivo" };
   }
 
-  const hoy = new Date().toISOString().slice(0, 10);
-
   const duplicado = await query(
     `SELECT id FROM consumos
      WHERE fecha = ?
@@ -73,8 +95,12 @@ export async function emitirTicket(rutInput: string) {
     [hoy, horario.tipo, usuario.id],
   );
 
-  const now = new Date();
-  const hora = now.toTimeString().slice(0, 5);
+  const hora = new Intl.DateTimeFormat("en-GB", {
+    timeZone: TZ,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
 
   return {
     ok: true,
