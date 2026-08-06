@@ -161,7 +161,7 @@ function ymdToShortDM(fecha: string) {
 ========================= */
 type BandKey = "desayuno" | "almuerzo" | "once";
 const BANDS: { key: BandKey; tipo: 1 | 2 | 3; label: string; start: number; end: number }[] = [
-  { key: "desayuno", tipo: 1, label: "Desayuno", start: 7, end: 10 },
+  { key: "desayuno", tipo: 1, label: "Desayuno", start: 7, end: 8 },
   { key: "almuerzo", tipo: 2, label: "Almuerzo", start: 11, end: 15 },
   { key: "once", tipo: 3, label: "Cena", start: 20, end: 23 },
 ];
@@ -173,6 +173,22 @@ const BAND_COLOR_CLASS: Record<1 | 2 | 3, string> = {
   2: "band-almuerzo",
   3: "band-once",
 };
+
+// Huecos sin servicio entre turnos (ej. 09:00-11:00 y 16:00-20:00), derivados
+// de los propios BANDS para que nunca queden desincronizados de los horarios reales.
+const GAP_LABEL = "Sin servicio";
+const gapBands = computed(() => {
+  const sorted = [...BANDS].sort((a, b) => a.start - b.start);
+  const gaps: { start: number; end: number }[] = [];
+
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const start = sorted[i].end + 1;
+    const end = sorted[i + 1].start - 1;
+    if (end >= start) gaps.push({ start, end });
+  }
+
+  return gaps;
+});
 
 const minHour = computed(() => {
   const base = Math.min(...BANDS.map((b) => b.start));
@@ -544,6 +560,22 @@ onUnmounted(() => {
                 >
                   <div class="band-label">{{ b.label }}</div>
                 </div>
+
+                <div
+                  v-for="g in gapBands"
+                  :key="`gap-${g.start}`"
+                  class="gap-band"
+                  :style="{
+                    left:
+                      ((g.start - minHour) / (maxHour - minHour + 1)) * 100 +
+                      '%',
+                    width:
+                      ((g.end - g.start + 1) / (maxHour - minHour + 1)) * 100 +
+                      '%',
+                  }"
+                >
+                  <div class="gap-band-label">{{ GAP_LABEL }}</div>
+                </div>
               </div>
 
               <div class="bars">
@@ -908,6 +940,26 @@ onUnmounted(() => {
 }
 .band-once {
   background: rgba(140, 220, 140, 0.55);
+}
+
+/* huecos sin servicio (gris neutro, distinto de los colores de turno) */
+.gap-band {
+  position: absolute;
+  top: 6px;
+  bottom: 22px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.04);
+}
+.gap-band-label {
+  position: absolute;
+  top: 10px;
+  left: 4px;
+  right: 4px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.15;
+  opacity: 0.32;
+  font-weight: 600;
 }
 
 /* barras (hora) */
