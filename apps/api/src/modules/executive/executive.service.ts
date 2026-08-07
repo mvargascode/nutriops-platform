@@ -16,6 +16,24 @@ function normalizeDate(date?: string): string | null {
   return date;
 }
 
+// Si no llega "date" explicito, se usa el dia real de Chile (no el del
+// servidor, que corre en UTC en produccion) - mismo patron que en
+// actividad.service.ts / aforo.service.ts.
+function getChileDateYmd(date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "America/Santiago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+
+  return `${year}-${month}-${day}`;
+}
+
 function pct(delta: number, prev: number): number | null {
   if (!prev || prev <= 0) return null;
   return (delta / prev) * 100;
@@ -55,12 +73,11 @@ function firstDayOfPrevMonthISO(dateISO: string): string {
 export async function getExecutiveSummary(
   date?: string,
 ): Promise<ExecutiveSummary> {
-  const ref = normalizeDate(date);
+  const refDateISO = normalizeDate(date) ?? getChileDateYmd();
 
-  const refSql = ref ? "DATE(?)" : "CURDATE()";
-  const paramsRef = ref ? [ref] : [];
+  const refSql = "DATE(?)";
+  const paramsRef = [refDateISO];
 
-  const refDateISO = ref ?? toISODate(new Date());
   const refDate = new Date(`${refDateISO}T00:00:00`);
 
   const totalToday = await getTodayTotal(refSql, paramsRef);
