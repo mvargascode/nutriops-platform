@@ -147,7 +147,12 @@ const optionDonut = computed(() => {
         return `${p?.name}: <b>${v}</b> (${pct}%)`;
       },
     },
-    legend: { bottom: 0, left: "center", textStyle: { fontSize: 12 } },
+    legend: {
+      bottom: 4,
+      left: "center",
+      itemGap: 16,
+      textStyle: { fontSize: 12 },
+    },
     graphic:
       total === 0
         ? [
@@ -168,10 +173,11 @@ const optionDonut = computed(() => {
       {
         name: "Distribución",
         type: "pie",
-        radius: ["55%", "75%"],
+        center: ["50%", "42%"],
+        radius: ["50%", "68%"],
         avoidLabelOverlap: true,
-        label: { show: true, formatter: "{b}: {c}" },
-        labelLine: { show: true },
+        label: { show: true, formatter: "{b}: {c}", fontSize: 12 },
+        labelLine: { show: true, length: 10, length2: 10 },
         data: donutData.value,
       },
     ],
@@ -189,12 +195,12 @@ const optionDonut = computed(() => {
       <VChart v-else class="chart" :option="optionMain" autoresize />
     </div>
 
-    <div class="chart-card">
+    <div class="chart-card chart-card--donut">
       <div class="chart-title">Distribución por tipo</div>
       <div v-if="!hasData" class="chart-empty">
         Sin datos para el rango seleccionado.
       </div>
-      <VChart v-else class="chart" :option="optionDonut" autoresize />
+      <VChart v-else class="chart chart--donut" :option="optionDonut" autoresize />
     </div>
   </div>
 </template>
@@ -218,6 +224,12 @@ const optionDonut = computed(() => {
   width: 100%;
   height: 280px;
   min-width: 0;         /* ✅ */
+}
+.chart-card--donut {
+  min-height: 360px;    /* espacio extra para que las etiquetas del pie no choquen con la leyenda */
+}
+.chart--donut {
+  height: 320px;
 }
 .chart-title {
   font-size: 14px;
