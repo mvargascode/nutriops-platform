@@ -461,6 +461,15 @@ watch(pageSize, () => {
   <div class="data-card">
     <div class="data-title">
       <h2>Cargar Menú — Importar Excel</h2>
+
+      <a
+        class="btn-file"
+        href="/plantilla-menu.xlsx"
+        download="Plantilla_Carga_Menu_Semanal.xlsx"
+        style="text-decoration: none; display: inline-block; margin-top: 8px;"
+      >
+        Descargar plantilla
+      </a>
     </div>
 
     <div class="data-controls">
