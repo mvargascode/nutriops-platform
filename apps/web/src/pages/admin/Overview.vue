@@ -66,9 +66,6 @@ async function fetchExecutive() {
 
     const res = await getExecutiveSummary({ date: refDate.value });
     data.value = res;
-
-    // Déjalo mientras pruebas; luego lo quitas.
-    console.log(JSON.stringify(res, null, 2));
   } catch (e: any) {
     error.value = e?.message || "Error cargando Executive Summary.";
     data.value = null;
