@@ -75,13 +75,17 @@ export async function getMonthTotal(refSql: string, params: any[]) {
   return Number((rows as any[])[0]?.total ?? 0);
 }
 
+// Comparacion "like-for-like": el mes actual siempre es parcial (mes en curso,
+// dia 1 al dia N), asi que se compara contra los mismos dias 1..N del mes
+// anterior, no el mes anterior completo (eso disparaba MONTH_DROP casi todos
+// los meses solo por comparar un periodo parcial contra uno completo).
 export async function getPreviousMonthTotal(refSql: string, params: any[]) {
   const [rows] = await pool.query(
     `
     SELECT COUNT(*) AS total
     FROM consumos
     WHERE fecha >= DATE_FORMAT(DATE_SUB(${refSql}, INTERVAL 1 MONTH), '%Y-%m-01')
-      AND fecha <  DATE_FORMAT(${refSql}, '%Y-%m-01');
+      AND fecha <= DATE_SUB(${refSql}, INTERVAL 1 MONTH);
     `,
     [...params, ...params],
   );
