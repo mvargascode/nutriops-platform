@@ -191,7 +191,10 @@ const optionDonut = computed(() => {
 
     <div class="chart-card">
       <div class="chart-title">Distribución por tipo</div>
-      <VChart v-if="hasData" class="chart" :option="optionMain" autoresize />
+      <div v-if="!hasData" class="chart-empty">
+        Sin datos para el rango seleccionado.
+      </div>
+      <VChart v-else class="chart" :option="optionDonut" autoresize />
     </div>
   </div>
 </template>
