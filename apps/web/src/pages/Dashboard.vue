@@ -94,17 +94,37 @@ const menuTitle = computed(() => {
   return "Menú del día";
 });
 
-// Aviso de "aún no abre": la ventana de despliegue de cada comida (arriba)
-// es más amplia que el horario real de servicio del kiosk
-// (apps/api/src/modules/kiosk/kiosk.service.ts: 07:00-09:00, 11:00-16:00,
-// 20:00-23:59), así que puede mostrarse una comida antes de que empiece.
-const proximaAperturaLabel = computed<string | null>(() => {
-  const h = horaCL.value;
-  if (h >= 6 && h < 7) return "Abre a las 07:00"; // Desayuno mostrado, aún no abre
-  if (h === 10) return "Abre a las 11:00"; // Almuerzo mostrado, aún no abre
-  if (h >= 16 && h < 20) return "Abre a las 20:00"; // Cena mostrada, aún no abre
-  return null;
-});
+// Aviso de "aún no abre" / "cerrado por hoy": la ventana de despliegue de
+// cada comida (arriba) es más amplia que el horario real de servicio del
+// kiosk (apps/api/src/modules/kiosk/kiosk.service.ts: 07:00-09:00,
+// 11:00-16:00, 20:00-23:59), así que puede mostrarse una comida antes de
+// que empiece o después de que el kiosk ya la haya cerrado por hoy.
+const turnoEstado = computed<{ texto: string | null; cerrado: boolean }>(
+  () => {
+    const h = horaCL.value;
+
+    if (h >= 6 && h < 10) {
+      // Desayuno del día
+      if (h < 7) return { texto: "Abre a las 07:00", cerrado: false };
+      if (h >= 9) return { texto: "Cerrado por hoy", cerrado: true };
+      return { texto: null, cerrado: false };
+    }
+
+    if (h >= 10 && h < 16) {
+      // Almuerzo del día
+      if (h < 11) return { texto: "Abre a las 11:00", cerrado: false };
+      return { texto: null, cerrado: false };
+    }
+
+    if (h >= 16 && h < 21) {
+      // Cena del día
+      if (h < 20) return { texto: "Abre a las 20:00", cerrado: false };
+      return { texto: null, cerrado: false };
+    }
+
+    return { texto: null, cerrado: false };
+  },
+);
 
 /* ===========================
    Reglas visuales por tipo
@@ -677,9 +697,12 @@ const gaugeColor = computed(() => {
           <div class="contenedor menu" style="grid-area: menu">
             <h2>
               {{ menuTitle }}
-              <span v-if="proximaAperturaLabel" class="badge-aun-no-abre">{{
-                proximaAperturaLabel
-              }}</span>
+              <span
+                v-if="turnoEstado.texto"
+                class="badge-aun-no-abre"
+                :class="{ 'badge-cerrado': turnoEstado.cerrado }"
+                >{{ turnoEstado.texto }}</span
+              >
             </h2>
 
             <div v-if="!inService" class="dash-nutri-empty">
@@ -1066,6 +1089,10 @@ const gaugeColor = computed(() => {
   font-size: 12px;
   font-weight: 700;
   vertical-align: middle;
+}
+.badge-aun-no-abre.badge-cerrado {
+  background: #fee2e2;
+  color: #991b1b;
 }
 .dash-pan-toggle {
   display: flex;
