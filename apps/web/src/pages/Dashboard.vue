@@ -94,6 +94,18 @@ const menuTitle = computed(() => {
   return "Menú del día";
 });
 
+// Aviso de "aún no abre": la ventana de despliegue de cada comida (arriba)
+// es más amplia que el horario real de servicio del kiosk
+// (apps/api/src/modules/kiosk/kiosk.service.ts: 07:00-09:00, 11:00-16:00,
+// 20:00-23:59), así que puede mostrarse una comida antes de que empiece.
+const proximaAperturaLabel = computed<string | null>(() => {
+  const h = horaCL.value;
+  if (h >= 6 && h < 7) return "Abre a las 07:00"; // Desayuno mostrado, aún no abre
+  if (h === 10) return "Abre a las 11:00"; // Almuerzo mostrado, aún no abre
+  if (h >= 16 && h < 20) return "Abre a las 20:00"; // Cena mostrada, aún no abre
+  return null;
+});
+
 /* ===========================
    Reglas visuales por tipo
 =========================== */
@@ -663,7 +675,12 @@ const gaugeColor = computed(() => {
         >
           <!-- Menú del día -->
           <div class="contenedor menu" style="grid-area: menu">
-            <h2>{{ menuTitle }}</h2>
+            <h2>
+              {{ menuTitle }}
+              <span v-if="proximaAperturaLabel" class="badge-aun-no-abre">{{
+                proximaAperturaLabel
+              }}</span>
+            </h2>
 
             <div v-if="!inService" class="dash-nutri-empty">
               Fuera de horario.
@@ -1038,6 +1055,17 @@ const gaugeColor = computed(() => {
   text-align: center;
   opacity: 0.7;
   padding: 14px 12px;
+}
+.badge-aun-no-abre {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: middle;
 }
 .dash-pan-toggle {
   display: flex;
