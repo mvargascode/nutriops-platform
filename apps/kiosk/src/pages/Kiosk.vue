@@ -9,6 +9,48 @@ const rutDv = ref("");   // 0-9 o K
 
 const loading = ref(false);
 
+// ===== Estado del turno (horario de Chile) =====
+// Replica las ventanas horarias reales del backend
+// (apps/api/src/modules/kiosk/kiosk.service.ts): Desayuno 07:00-09:00,
+// Almuerzo 11:00-16:00, Cena 20:00-23:59. Se muestra proactivamente en la
+// pantalla principal para que la persona sepa si el casino está abierto
+// antes de escribir su RUT, en vez de enterarse solo tras el error del
+// backend.
+const TZ = "America/Santiago";
+
+type TurnoInfo =
+  | { abierto: true; turno: string; hastaLabel: string }
+  | { abierto: false; proximoTurno: string; horaAbre: string };
+
+const horaCL = ref<number>(0);
+
+function tickHoraCL() {
+  horaCL.value = Number(
+    new Intl.DateTimeFormat("es-CL", {
+      timeZone: TZ,
+      hour: "2-digit",
+      hour12: false,
+    }).format(new Date()),
+  );
+}
+
+const turnoInfo = computed<TurnoInfo>(() => {
+  const h = horaCL.value;
+
+  if (h >= 7 && h < 9) return { abierto: true, turno: "Desayuno", hastaLabel: "09:00" };
+  if (h >= 11 && h < 16) return { abierto: true, turno: "Almuerzo", hastaLabel: "16:00" };
+  if (h >= 20 && h <= 23) return { abierto: true, turno: "Cena", hastaLabel: "23:59" };
+
+  if (h < 7) return { abierto: false, proximoTurno: "Desayuno", horaAbre: "07:00" };
+  if (h < 11) return { abierto: false, proximoTurno: "Almuerzo", horaAbre: "11:00" };
+  return { abierto: false, proximoTurno: "Cena", horaAbre: "20:00" };
+});
+
+const casinoAbierto = computed(() => turnoInfo.value.abierto);
+
+const TURNO_REFRESH_MS = 30000;
+let turnoTimer: number | null = null;
+
 // ===== Overlay / Alert =====
 const overlayOpen = ref(false);
 const overlayTitle = ref<string>("Atención");
@@ -198,11 +240,16 @@ function onKeydown(e: KeyboardEvent) {
   if (k === "K") pressKey("K");
 }
 
-onMounted(() => window.addEventListener("keydown", onKeydown));
+onMounted(() => {
+  window.addEventListener("keydown", onKeydown);
+  tickHoraCL();
+  turnoTimer = window.setInterval(tickHoraCL, TURNO_REFRESH_MS);
+});
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeydown);
   cancelIdleTimer();
   if (overlayTimer) window.clearTimeout(overlayTimer);
+  if (turnoTimer) window.clearInterval(turnoTimer);
 });
 </script>
 
@@ -211,6 +258,15 @@ onBeforeUnmount(() => {
     <header class="kioskHeader">
       <h1>Totem NutriOps</h1>
       <p>Ingrese su RUT para emitir ticket</p>
+
+      <p class="kioskTurnoStatus" :class="{ cerrado: !casinoAbierto }">
+        <template v-if="turnoInfo.abierto">
+          Turno activo: {{ turnoInfo.turno }} (hasta las {{ turnoInfo.hastaLabel }})
+        </template>
+        <template v-else>
+          Fuera de horario de servicio. Próximo turno: {{ turnoInfo.proximoTurno }}, abre a las {{ turnoInfo.horaAbre }}
+        </template>
+      </p>
     </header>
 
     <main class="kioskMain">
@@ -222,7 +278,7 @@ onBeforeUnmount(() => {
         <button
           class="kioskEmitBtn"
           :disabled="loading"
-          :class="{ pressed: pressedKey === 'ENTER' }"
+          :class="{ pressed: pressedKey === 'ENTER', atenuado: !casinoAbierto }"
           @click="submit"
         >
           {{ loading ? "Procesando..." : "Emitir Ticket" }}
@@ -230,7 +286,7 @@ onBeforeUnmount(() => {
 
         <div class="kioskHint">Presione <b>ENTER</b> para confirmar</div>
 
-        <div class="kioskKeypad">
+        <div class="kioskKeypad" :class="{ atenuado: !casinoAbierto }">
           <button v-for="n in [1,2,3]" :key="'a'+n" @click="pressKey(String(n))" :class="{ pressed: pressedKey === String(n) }">
             {{ n }}
           </button>

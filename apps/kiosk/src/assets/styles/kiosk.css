@@ -119,6 +119,30 @@ body {
     color: #ffb3b3;
 }
 
+.kioskTurnoStatus {
+    display: inline-block;
+    margin: 12px auto 0;
+    max-width: 640px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: clamp(13px, 2vh, 18px);
+    font-weight: 700;
+    background: rgba(107, 195, 106, .18);
+    color: #bdf2bc;
+    border: 1px solid rgba(107, 195, 106, .4);
+}
+
+.kioskTurnoStatus.cerrado {
+    background: rgba(255, 100, 100, .16);
+    color: #ffc2c2;
+    border-color: rgba(255, 100, 100, .45);
+}
+
+.atenuado {
+    opacity: .45;
+    transition: opacity .2s ease;
+}
+
 /* ===== Keypad ===== */
 .kioskKeypad {
     margin-top: clamp(8px, 2vh, 18px);
