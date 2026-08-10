@@ -57,9 +57,11 @@ function tickHora() {
 }
 
 // Horario oficial para mostrar menú/nutrición
+// Cena se extiende hasta las 23:59 (igual que kiosk.service.ts), no hasta
+// las 21:00 - el límite superior debe cubrir todo el turno real.
 const inService = computed(() => {
   const h = horaCL.value;
-  return h >= 6 && h < 21;
+  return h >= 6 && h < 24;
 });
 
 // Tipo actual según horario oficial (para queries)
@@ -67,7 +69,7 @@ const tipoActual = computed<TipoComida | 1 | 2 | 3>(() => {
   const h = horaCL.value;
   if (h >= 6 && h < 10) return 1; // desayuno
   if (h >= 10 && h < 16) return 2; // almuerzo
-  if (h >= 16 && h < 21) return 3; // cena
+  if (h >= 16 && h < 24) return 3; // cena
   return 2;
 });
 
@@ -90,7 +92,7 @@ const menuTitle = computed(() => {
   const h = horaCL.value;
   if (h >= 6 && h < 10) return "Desayuno del día";
   if (h >= 10 && h < 16) return "Almuerzo del día";
-  if (h >= 16 && h < 21) return "Cena del día";
+  if (h >= 16 && h < 24) return "Cena del día";
   return "Menú del día";
 });
 
@@ -116,7 +118,7 @@ const turnoEstado = computed<{ texto: string | null; cerrado: boolean }>(
       return { texto: null, cerrado: false };
     }
 
-    if (h >= 16 && h < 21) {
+    if (h >= 16 && h < 24) {
       // Cena del día
       if (h < 20) return { texto: "Abre a las 20:00", cerrado: false };
       return { texto: null, cerrado: false };
