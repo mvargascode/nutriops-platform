@@ -72,12 +72,16 @@ function tickHora() {
   );
 }
 
+// Cena se extiende hasta las 23:59 (igual que kiosk.service.ts), no hasta
+// las 21:00 - el límite superior debe cubrir todo el turno real, si no
+// esta hora cae al fallback (Almuerzo) y la ocupación consulta el turno
+// equivocado durante toda la Cena.
 const tipoActual = computed<TipoComida>(() => {
   const h = horaCL.value;
 
   if (h >= 6 && h < 10) return 1; // desayuno
   if (h >= 10 && h < 16) return 2; // almuerzo
-  if (h >= 16 && h < 21) return 3; // once
+  if (h >= 16 && h < 24) return 3; // once
 
   // fuera de horario, deja almuerzo por defecto
   return 2;
