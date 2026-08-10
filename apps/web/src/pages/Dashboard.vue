@@ -662,11 +662,7 @@ const gaugeColor = computed(() => {
     class="page dashboard-bg"
     :style="{ backgroundImage: `url(${fondoCasino})` }"
   >
-    <AppHeader
-      :show-nav="true"
-      right-link-text="Links"
-      right-link-href="#"
-    />
+    <AppHeader :show-nav="true" />
 
     <main>
       <section class="contenedor-principal">

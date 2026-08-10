@@ -7,8 +7,6 @@ type RouteLike = { name?: string } | string | Record<string, any>
 const props = defineProps<{
   to?: RouteLike | null
   showNav?: boolean
-  rightLinkText?: string
-  rightLinkHref?: string
   hour12?: boolean
 }>()
 
@@ -42,7 +40,7 @@ onBeforeUnmount(() => { if (t) clearInterval(t) })
   <component :is="to ? RouterLink : 'div'" :to="to || undefined" style="text-decoration:none">
     <header class="encabezado">
       <img src="/img/iconnutriops.png" alt="icono" />
-      <h1 class="titulo">NutriOps - Operational Food Service Platform</h1>
+      <h1 class="titulo">NutriOps - Plataforma de Gestión de Alimentación</h1>
       <span class="spacer" aria-hidden="true"></span>
     </header>
   </component>
@@ -55,9 +53,6 @@ onBeforeUnmount(() => { if (t) clearInterval(t) })
     </div>
 
     <div class="navegacion-principal">
-      <a v-if="rightLinkHref" class="links" :href="rightLinkHref" target="_blank" rel="noopener">
-        {{ rightLinkText || 'Links' }}
-      </a>
       <slot name="right" />
     </div>
   </nav>
@@ -115,9 +110,6 @@ onBeforeUnmount(() => { if (t) clearInterval(t) })
 
 .iconocalendario{ width:5rem; }
 .fecha,.hora{ font-weight:700; font-size: 1.5rem; line-height: 1.2; display: inline-block; height: 1.7rem; }
-.navegacion-principal .links{
-  color:#fff; text-decoration:none; font-weight:600;
-}
 
 @media (max-width: 768px) {
   .contenedor-calendario {

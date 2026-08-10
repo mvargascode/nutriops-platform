@@ -76,12 +76,7 @@ async function onSubmit() {
     class="login-page login-bg"
     :style="{ backgroundImage: `url(${fondoCasino})` }"
   >
-    <AppHeader
-      :to="{ name: 'public-dashboard' }"
-      :show-nav="true"
-      right-link-text="Links"
-      right-link-href="#"
-    />
+    <AppHeader :to="{ name: 'public-dashboard' }" :show-nav="true" />
 
     <main>
       <div class="contendor">
