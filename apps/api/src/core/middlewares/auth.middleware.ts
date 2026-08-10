@@ -24,9 +24,6 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
       throw new AppError("Token no proporcionado", 401, "AUTH_TOKEN_MISSING");
     }
 
-    console.log("[requireAuth] ejecutándose");
-    console.log("[requireAuth] authorization:", req.headers.authorization);
-
     const [scheme, token] = authHeader.split(" ");
 
     if (scheme !== "Bearer" || !token) {

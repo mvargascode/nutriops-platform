@@ -7,7 +7,10 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  const status = Number(err?.status) || 500;
+  // AppError expone el código HTTP en `statusCode` (no `status`) - leer la
+  // propiedad equivocada hacía que CUALQUIER AppError (401, 404, etc.)
+  // terminara respondiendo 500 en vez de su status real.
+  const status = Number(err?.statusCode ?? err?.status) || 500;
 
   console.error("ERROR HANDLER =>", {
     message: err?.message,

@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import type { TipoComida } from "@/api/casino";
 import { http } from "@/api/http";
 import { useSseStore } from "@/stores/sse";
+import { useAuthStore } from "@/stores/auth";
 
 /* =========================
    DTOs
@@ -53,6 +54,7 @@ type UltimaSemanaDTO = {
 };
 
 const sse = useSseStore();
+const auth = useAuthStore();
 
 /* =========================
    Hora Chile + tipo actual
@@ -380,10 +382,19 @@ async function loadActividadHoy() {
   }
 }
 
+function buildActividadSseUrl() {
+  // EventSource no puede mandar el header Authorization, así que el token
+  // va como query param (ver allowSseTokenFromQuery en actividad.routes.ts).
+  const qs = new URLSearchParams();
+  if (auth.token) qs.set("token", auth.token);
+  const query = qs.toString();
+  return `/api/actividad/hoy/stream${query ? `?${query}` : ""}`;
+}
+
 function startActividadSse() {
   sse.subscribe(
     "actividad_hoy",
-    "/api/actividad/hoy/stream",
+    buildActividadSseUrl(),
     {
       onMessage: (ev) => {
         try {
