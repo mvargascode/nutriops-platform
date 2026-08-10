@@ -19,8 +19,11 @@ export async function streamHoy(
   next: NextFunction,
 ) {
   try {
+    // Piso subido de 2000ms a 5000ms (igual al default) para que nadie
+    // pueda pedir un polling mas agresivo del que ya usa el frontend y
+    // sumar presion extra al pool de conexiones a MySQL.
     const everyMs = Math.max(
-      2000,
+      5000,
       Math.min(30000, Number(req.query.everyMs ?? 5000)),
     );
 
