@@ -3,12 +3,39 @@
 ![Vue](https://img.shields.io/badge/Vue-3-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Yes-blue)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-orange)
+![Deployed](https://img.shields.io/badge/Deployed-Railway%20%2B%20Vercel-blueviolet)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 
 Plataforma operativa para la gestión y análisis de servicios de alimentación institucional, orientada a entornos como hospitales, universidades y casinos corporativos.
 
 NutriOps permite monitorear consumos, visualizar indicadores en tiempo real, administrar operaciones y apoyar la toma de decisiones mediante dashboards interactivos, reportes y herramientas de carga de datos.
+
+---
+
+## 🚀 Demo en vivo
+
+El sistema está desplegado en producción, con datos reales y un job programado que simula actividad de forma realista durante los horarios de servicio — no es data estática.
+
+| Módulo | URL |
+|---|---|
+| 🖥️ Dashboard público (menú del día, ocupación en vivo) | [nutriops-platform.vercel.app](https://nutriops-platform.vercel.app) |
+| 🎫 Tótem (registro de consumo por RUT) | [nutriops-totem.vercel.app](https://nutriops-totem.vercel.app) |
+| 🔌 API | Desplegada en Railway (backend de ambos módulos de arriba) |
+
+**Acceso administrador** (link "Acceso Administrador" al pie del dashboard público):
+
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| Admin | `admin` | `admin123` |
+| Nutrición | `nutri` | `nutri123` |
+| RRHH | `rrhh` | `rrhh123` |
+
+**Para probar el tótem**, cualquiera de estos RUT de demo emite un ticket válido según la hora real (desayuno 07-09h, almuerzo 11-16h, cena 20-24h):
+
+```
+11.111.111-1   22.222.222-2   33.333.333-3
+```
 
 ---
 
@@ -29,12 +56,14 @@ El sistema simula condiciones reales mediante datos históricos y generación de
 
 - Dashboards operacionales en tiempo real
 - Visualización en vivo mediante SSE (Server-Sent Events)
-- Gestión de consumo por tipo de comida: desayuno, almuerzo y once
+- Gestión de consumo por tipo de comida: desayuno, almuerzo y cena
 - Reportes y analítica de consumo
 - Gestión de usuarios por roles
 - Arquitectura modular tipo monorepo
 - Módulo kiosk para registro de consumos
 - Carga de menú semanal mediante plantilla Excel
+- Simulador de actividad en tiempo real para la demo (job programado con Railway Cron)
+- Diseño responsive (móvil, tablet y escritorio) en dashboard público, panel admin y kiosk
 - Base de datos inicial reproducible para entorno local
 
 ---
@@ -66,6 +95,15 @@ nutriops-platform
 - **scripts**: seeds y generación de datos de prueba
 - **database**: estructura SQL inicial del sistema
 - **templates**: plantilla Excel para carga de menú
+
+### Infraestructura de producción
+
+| Componente | Servicio |
+|---|---|
+| API + Base de datos MySQL | [Railway](https://railway.com) |
+| Dashboard público + panel admin (`apps/web`) | [Vercel](https://vercel.com) |
+| Tótem (`apps/kiosk`) | [Vercel](https://vercel.com) |
+| Simulador de actividad | Railway Cron Service (cada 10 min, solo durante horarios de servicio) |
 
 ---
 
@@ -244,7 +282,7 @@ Ubicación:
 templates/
 ```
 
-Permite simular la carga de menú semanal en el sistema.
+Permite simular la carga de menú semanal en el sistema. También se puede descargar directamente desde el panel admin (Menú → Importar Menú → "Descargar plantilla").
 
 ### Uso
 
@@ -260,7 +298,7 @@ Permite simular la carga de menú semanal en el sistema.
 - Monitoreo de aforo
 - Registro de consumos
 - Visualización en tiempo real
-- Reportes históricos
+- Reportes históricos y exportación a Excel
 - Gestión de usuarios
 - Carga de menú vía Excel
 
@@ -275,7 +313,7 @@ Permite simular la carga de menú semanal en el sistema.
 ![Menú Semana - Dashboard Público](assets/screenshots/Menu-Semanal-Dashboard-Publico.png)
 
 ### Login
-![Menú Semana - Dashboard Público](assets/screenshots/Login.png)
+![Login](assets/screenshots/Login.png)
 
 ### Admin Dashboard Operativo
 ![Admin Dashboard](assets/screenshots/Admin-Dashboard-Operativo.png)
@@ -306,6 +344,21 @@ Permite simular la carga de menú semanal en el sistema.
 
 ---
 
+## 🧠 De desarrollo local a producción: aprendizajes reales
+
+Este proyecto empezó como un prototipo funcional en local. Llevarlo a producción (Railway + Vercel) sacó a la luz una serie de bugs que nunca se habían manifestado en desarrollo, y que fue necesario diagnosticar y resolver uno por uno:
+
+- **Build de producción vs. desarrollo**: el proyecto corría en local con `ts-node-dev` (sin build real). Al compilar con `tsc` para producción, apareció que la configuración de TypeScript generaba el output en una ruta distinta a la que el script de arranque esperaba, y que los alias de import (`@/`) no se resolvían fuera de desarrollo sin registrar `tsconfig-paths` en tiempo de ejecución.
+- **Zona horaria del contenedor**: los contenedores de Railway corren en UTC, mientras que toda la lógica de horarios de servicio (desayuno/almuerzo/cena) está pensada en hora de Chile. Esto causó fallas silenciosas cerca de los límites de cada turno — desde el tótem rechazando registros en plena hora de servicio, hasta alertas operativas comparando períodos de distinta duración — hasta centralizar el cálculo de hora usando `Intl.DateTimeFormat` con `timeZone: 'America/Santiago'`.
+- **Codificación UTF-8**: una carga inicial de datos vía consola resultó en doble-codificación de caracteres con tilde, resuelta con una conversión `CONVERT(...USING latin1...USING utf8mb4)`.
+- **SSE + autenticación**: la API nativa `EventSource` del navegador no puede enviar headers personalizados, lo que rompía la autenticación de los streams en tiempo real para usuarios logueados. Se resolvió aceptando el token también por query string para esas rutas específicas.
+- **Pool de conexiones**: bajo carga de múltiples streams SSE simultáneos, el límite por defecto del pool de conexiones a MySQL resultó insuficiente, generando timeouts intermitentes — visible en las métricas como requests en cola sin que hubiera presión real de CPU o memoria.
+- **Simulación de actividad realista**: se implementó un job programado (Railway Cron) que reparte el registro de consumos a lo largo de cada ventana horaria de forma proporcional al tiempo transcurrido, en vez de saturar el cupo del día de golpe — así la demo se ve viva y creíble en cualquier momento que alguien la visite.
+- **Auditoría de lógica de negocio**: una revisión sistemática de dashboards, reportes y alertas operacionales (comparando cada número contra la base de datos directamente) encontró varios bugs reales más allá de lo visual — un gráfico que renderizaba los datos equivocados, y una alerta de "caída de consumo" que se disparaba en falso por comparar un mes parcial contra un mes completo.
+- **Responsividad**: el diseño original no tenía cobertura de `@media queries` en gran parte del dashboard, panel admin y tótem. Se hizo una revisión sistemática módulo por módulo (layout con grid/flexbox, gráficos que se redimensionan con su contenedor, tablas con scroll horizontal contenido) para que la plataforma sea usable en celular, tablet y escritorio.
+
+---
+
 ## 🧠 Aprendizajes
 
 Durante el desarrollo de este proyecto se abordaron desafíos reales como:
@@ -315,22 +368,24 @@ Durante el desarrollo de este proyecto se abordaron desafíos reales como:
 - Modelado de datos para consumo alimentario
 - Manejo de roles y autenticación en backend
 - Generación de datos realistas para testing
+- Diagnóstico y resolución de bugs específicos de producción (zona horaria, build, encoding, pool de conexiones)
+- Despliegue y operación real en Railway + Vercel, incluyendo jobs programados
 
 ---
 
 ## Estado del proyecto
 
-Proyecto en desarrollo activo con mejoras continuas en arquitectura, rendimiento y visualización.
+Proyecto desplegado y en mejora continua. Esta es una **demo pública con fines de portafolio** — los datos de usuarios, consumos y menú son simulados.
 
 ---
 
 ## Autor
 
-**Milton Vargas**  
+**Milton Vargas**
 Software Engineer | Backend, Systems & Infrastructure
 
-- GitHub: https://github.com/mvargascode  
-- LinkedIn: https://www.linkedin.com/in/miltonvargasa  
+- GitHub: https://github.com/mvargascode
+- LinkedIn: https://www.linkedin.com/in/miltonvargasa
 
 ---
 
