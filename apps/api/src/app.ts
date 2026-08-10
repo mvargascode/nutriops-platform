@@ -19,6 +19,14 @@ import menuRoutes from "./modules/menu/menu.routes";
 
 const app = express();
 
+// El JWT del SSE de actividad viaja por query string (?token=...) porque
+// EventSource no puede mandar headers - sin este override, morgan loguea
+// la URL completa (con el token en texto plano) en cada request.
+morgan.token("url", (req: express.Request) => {
+  const url = req.originalUrl ?? req.url ?? "";
+  return url.replace(/([?&]token=)[^&]+/i, "$1[REDACTED]");
+});
+
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("dev"));
