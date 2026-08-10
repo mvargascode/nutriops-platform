@@ -29,6 +29,7 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: Login,
+      meta: { hideAdminLink: true },
     },
     {
       path: "/aforo",
