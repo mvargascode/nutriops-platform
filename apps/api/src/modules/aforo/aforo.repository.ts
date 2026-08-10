@@ -29,25 +29,31 @@ export async function countHoyByTipo(
 }
 
 export async function getOcupacionData(params: {
+  fecha: string;
   tipo: number;
   ventanaMin: number;
   turno: number | null;
 }): Promise<OcupacionData> {
-  const { tipo, ventanaMin, turno } = params;
+  const { fecha, tipo, ventanaMin, turno } = params;
 
-  const sqlParams: number[] = [tipo, ventanaMin];
+  // "fecha" se guarda en el huso de Chile (ver getChileDateYmd en el
+  // service), no en el huso del servidor de BD (SYSTEM/UTC en Railway). Por
+  // eso se recibe ya calculado en vez de usar CURDATE(): entre 20:00 y
+  // 23:59 hora Chile la fecha UTC ya cambió de día y CURDATE() no
+  // coincidía con "fecha", dejando la ocupación siempre en 0 durante Cena.
+  const sqlParams: (string | number)[] = [fecha, tipo, ventanaMin];
   let whereTurno = "";
 
   if (turno !== null && !Number.isNaN(turno)) {
     whereTurno = " AND turno_id = ? ";
-    sqlParams.splice(1, 0, turno);
+    sqlParams.splice(2, 0, turno);
   }
 
   const rows = await query<{ ocupacion: number; capacidad: number }>(
     `
     SELECT
       (SELECT COUNT(DISTINCT usuario_id) FROM consumos
-        WHERE fecha = CURDATE()
+        WHERE fecha = ?
           AND tipo = ?
           ${whereTurno}
           AND created_at >= NOW() - INTERVAL ? MINUTE

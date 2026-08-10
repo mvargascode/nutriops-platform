@@ -114,7 +114,8 @@ export async function getAforoHoyService(
 export async function getOcupacionService(
   params: OcupacionParams,
 ): Promise<OcupacionResponse> {
-  const { ocupacion, capacidad } = await getOcupacionData(params);
+  const fecha = getChileDateYmd();
+  const { ocupacion, capacidad } = await getOcupacionData({ ...params, fecha });
 
   const porcentaje = capacidad
     ? Math.min(100, Math.max(0, Math.round((ocupacion / capacidad) * 100)))
